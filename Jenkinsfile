@@ -26,6 +26,7 @@ pipeline {
                            dir(FRONTEND_DIR) {
         
         echo 'Installing frontend dependencies for ReactJS'
+        sh 'rm -rf node_modules package-lock.json'
         sh 'npm install'
     }
                     }
