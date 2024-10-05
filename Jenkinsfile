@@ -10,16 +10,17 @@ pipeline {
         GIT_BRANCH = 'main'
     }
     stages {
-        stage('Preparation') {
-            steps {
-                script {
-                    echo "Préparation de l'environnement"
-                    echo "Utilisation du dépôt Git existant"
+         stage('Install Backend Dependencies') {
+                    steps {
+                        dir(BACKEND_DIR) {
+                            echo 'Installation des dépendances pour le backend NestJS'
+                            sh 'npm install'
+                        }
+                    }
                 }
-            }
-        }
-        stage('Install Dependencies') {
-            parallel {
+        
+        
+           
                 stage('Install Frontend Dependencies') {
                     steps {
                         dir(FRONTEND_DIR) {
@@ -29,16 +30,9 @@ pipeline {
                     }
                 }
 
-                stage('Install Backend Dependencies') {
-                    steps {
-                        dir(BACKEND_DIR) {
-                            echo 'Installation des dépendances pour le backend NestJS'
-                            sh 'npm install'
-                        }
-                    }
-                }
-            }
-        }
+               
+            
+        
         stage('SonarQube Analysis') {
             steps {
                 script {
