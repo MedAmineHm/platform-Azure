@@ -1,0 +1,27 @@
+.listContainer {
+
+}
+
+.listService {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #e8e8e8;
+    position: relative;
+}
+
+.listService:hover {
+    background-color:#dfd9fc70;
+    cursor: grab;
+}
+
+.serviceIcon {
+    color: #4f4f4f;
+}
+
+.groupNotif {
+    font-size: 8px;
+    position: absolute;
+    top: 2px;
+    right: 6px;
+    color: #d1d1d1;
+}

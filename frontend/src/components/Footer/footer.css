@@ -1,0 +1,40 @@
+/* Footer styles */
+.footer {
+  background-color: #002147; /* Dark blue background */
+  color: #ffffff; /* White text color */
+  padding: 40px 0;
+  font-family: Arial, sans-serif;
+}
+
+.footer .title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.footer .footer-subtitle {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.footer .footer-text {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.footer .footer-nav .nav-item {
+  margin-bottom: 10px;
+}
+
+.footer .nav-link {
+  color: #ffffff; /* White text color */
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.footer .nav-link:hover {
+  color: #ffb900; /* Yellow on hover */
+}

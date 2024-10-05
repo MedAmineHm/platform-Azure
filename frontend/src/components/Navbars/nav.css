@@ -1,0 +1,87 @@
+/* Navbar brand styles */
+#navbar-brand {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  text-decoration: none;
+  font-size: 1.5rem;
+  color: #ffffff; /* Adjust color for better contrast */
+  font-weight: 600;
+}
+
+#navbar-brand span {
+  margin-right: 5px; /* Adjust spacing between text elements */
+  font-weight: bold;
+  color: #ffffff; /* Change to white */
+}
+
+/* Adding hover effects */
+#navbar-brand:hover {
+  color: #dcdcdc; /* Light grey on hover */
+  text-decoration: none;
+}
+
+#navbar-brand span {
+  transition: color 0.3s ease; /* Smooth color transition on hover */
+}
+
+#navbar-brand:hover span {
+  color: #dcdcdc; /* Light grey on hover */
+}
+
+/* Additional styling for the navigation bar */
+.navbar {
+  background-color: #0078d4; /* Azure blue background */
+  padding: 10px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-nav {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.nav-link {
+  color: #ffffff;
+  margin: 0 10px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.nav-link:hover {
+  color: #dcdcdc;
+}
+
+/* Button styles */
+.btn {
+  color: #ffffff;
+  background-color: #24292e; /* Dark background for buttons */
+  border: none;
+  padding: 10px 20px;
+  margin-left: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #444d56; /* Slightly lighter dark background on hover */
+}
+
+/* Ensuring responsiveness */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .navbar-nav {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .nav-link {
+    margin: 5px 0;
+  }
+}

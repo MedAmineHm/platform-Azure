@@ -1,0 +1,22 @@
+.navbar {
+    height: 90vh;
+    width: rem(300px);
+    padding: var(--mantine-spacing-md);
+    padding-bottom: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  
+
+  .servicesGroup {
+    flex: 1;
+    margin-left: calc(var(--mantine-spacing-md) * -1);
+    margin-right: calc(var(--mantine-spacing-md) * -1);
+  }
+
+  
+  .footer {
+    margin-left: calc(var(--mantine-spacing-md) * -1);
+    margin-right: calc(var(--mantine-spacing-md) * -1);
+    border-top: rem(1px) solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+  }

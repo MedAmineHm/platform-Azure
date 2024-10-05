@@ -1,0 +1,46 @@
+trigger:
+  - main
+
+pr:
+  - "*"
+
+pool:
+  vmImage: ubuntu-latest
+
+jobs:
+  - job: Build
+    displayName: "Build and Publish Artifacts"
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: "20.x"
+        displayName: "Install Node.js"
+
+      - script: |
+          npm install
+          npm run build
+        displayName: "npm install and build"
+
+      - task: ArchiveFiles@2
+        inputs:
+          rootFolderOrFile: "$(Build.BinariesDirectory)"
+          includeRootFolder: true
+          archiveType: "zip"
+          archiveFile: "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip"
+          replaceExistingArchive: true
+        displayName: "Archive Build Artifacts"
+
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: "$(Build.ArtifactStagingDirectory)"
+          ArtifactName: "drop"
+          publishLocation: "Container"
+        displayName: "Publish Build Artifacts"
+      - task: Docker@2
+        inputs:
+          containerRegistry: "docker"
+          repository: "mohamedamine1/frontend"
+          command: "buildAndPush"
+          Dockerfile: "**/Dockerfile"
+          tags: "frontend-pfe"
+        displayName: "Build and Push Docker Image"
