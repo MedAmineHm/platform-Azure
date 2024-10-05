@@ -24,8 +24,7 @@ pipeline {
                 stage('Install Frontend Dependencies') {
                     steps {
                            dir(FRONTEND_DIR) {
-        echo 'Cleaning node_modules and package-lock.json'
-        sh 'rm -rf node_modules package-lock.json'
+        
         echo 'Installing frontend dependencies for ReactJS'
         sh 'npm install'
     }
