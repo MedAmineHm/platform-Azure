@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools { 
-        nodejs "NODE_HOME" // Remplacez "NODE_HOME" par le nom de votre outil Node.js
+        nodejs "NODE_HOME" 
     }
     environment {
         FRONTEND_DIR = 'frontend'   
@@ -33,22 +33,22 @@ pipeline {
                
             
         
-        stage('SonarQube Analysis') {
-            steps {
-                script {
-                    withSonarQubeEnv('sonarqube') {
-                        dir(BACKEND_DIR) {
-                            sh 'npm install sonar-scanner'
-                            sh 'npm run sonar'
-                        }
-                    }     
-                } 
-            }
-        }
+       // stage('SonarQube Analysis') {
+         //   steps {
+           //     script {
+             //       withSonarQubeEnv('sonarqube') {
+               //         dir(BACKEND_DIR) {
+                 //           sh 'npm install sonar-scanner'
+                   //         sh 'npm run sonar'
+                     //   }
+                    //}     
+                //} 
+            //}
+        //}
         stage('Build Docker Image') {
             steps {
                 script {
-                    dir(BACKEND_DIR) { // Changez le répertoire à backend pour construire l'image
+                    dir(BACKEND_DIR) { 
                         sh 'docker build -t mohamedamine1/backend-azure:backend .'
                     }
                 }  
