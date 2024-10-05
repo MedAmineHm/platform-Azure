@@ -1,0 +1,19 @@
+[1mProject:[0m MedAmineHm/pfe-insomea-backend/terraform-codes\your-path
+
+[1mErrors:[0m
+  No such file or directory ./terraform-codes/your-path
+
+  Try adding a config-file to configure how Infracost should run. See [4;1mhttps://infracost.io/config-file[0m for details and examples.
+
+[1m OVERALL TOTAL[0m       $0.00 
+
+*Usage costs were estimated using Infracost Cloud settings, see docs for other options.
+
+──────────────────────────────────
+No cloud resources were detected
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━━━━┓
+┃ Project                                                  ┃ Baseline cost ┃ Usage cost* ┃ Total cost ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━╋━━━━━━━━━━━━┫
+┃ MedAmineHm/pfe-insomea-backend/terraform-codes\your-path ┃         $0.00 ┃       $0.00 ┃      $0.00 ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━┻━━━━━━━━━━━━┛

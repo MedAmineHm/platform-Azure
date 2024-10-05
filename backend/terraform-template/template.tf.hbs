@@ -1,0 +1,95 @@
+provider "azurerm" {
+  features {}
+}
+
+{{#if resources}}
+{{#each resources}}
+resource "azurerm_resource_group" "{{resource_name}}" {
+    name     = "{{name}}"
+    location = "{{location}}"
+}
+
+{{/each}}
+{{/if}}
+
+{{#if vnets}}
+{{#each vnets}}
+resource "azurerm_virtual_network" "{{resource_name}}" {
+  name                = "{{name}}"
+  address_space       = ["10.0.0.0/16"]
+  location            = {{location}}
+  resource_group_name = {{resource_group_name}}
+}
+
+{{/each}}
+{{/if}}
+
+{{#if subnets}}
+{{#each subnets}}
+resource "azurerm_subnet" "{{resource_name}}" {
+  name                 = "{{name}}"
+  address_prefixes     = ["10.0.2.0/24"]
+  resource_group_name  = {{resource_group_name}}
+  virtual_network_name = {{virtual_network_name}}
+}
+
+{{/each}}
+{{/if}}
+
+{{#if publicIps}}
+{{#each publicIps}}
+resource "azurerm_public_ip" "{{resource_name}}" {
+  name                = "{{name}}"
+  location            = {{location}}
+  resource_group_name = {{resource_group_name}}
+  allocation_method   = "{{allocation_method}}"
+}
+
+{{/each}}
+{{/if}}
+
+{{#if networkInterfaces}}
+{{#each networkInterfaces}}
+resource "azurerm_network_interface" "{{resource_name}}" {
+  name                = "{{name}}"
+  location            = {{location}}
+  resource_group_name = {{resource_group_name}}
+
+  ip_configuration {
+    name                          = "{{ip_configuration.name}}"
+    subnet_id                     = {{ip_configuration.subnet_id}}
+    private_ip_address_allocation = "{{ip_configuration.private_ip_address_allocation}}"
+    public_ip_address_id          = {{ip_configuration.public_ip_address_id}}
+  }
+}
+
+{{/each}}
+{{/if}}
+
+
+{{#if vms}}
+{{#each vms}}
+resource "azurerm_linux_virtual_machine" "{{resource_name}}" {
+  name                = "{{name}}"
+  location            = {{location}}
+  resource_group_name = {{resource_group_name}}
+  size                = "{{size}}"
+  admin_username      = "{{admin_username}}"
+
+  network_interface_ids = [
+    {{network_interface_ids}},
+  ]
+
+  admin_ssh_key {
+    username   = "adminuser"
+    public_key = file("~/.ssh/id_rsa.pub")
+  }
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+}
+
+{{/each}}
+{{/if}}

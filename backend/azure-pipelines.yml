@@ -1,0 +1,54 @@
+trigger:
+  - main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '16.x' # Update to Node.js 16.x or higher
+    displayName: 'Install Node.js'
+
+  - script: |
+      npm install
+      npm run build
+    displayName: 'Install Dependencies and Build'
+
+  - script: |
+      npm test -- --config=jest.config.js
+    displayName: 'Run Unit Tests'
+    continueOnError: true
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: 'JUnit'
+      testResultsFiles: '**/TEST-*.xml'
+      failTaskOnFailedTests: false
+    condition: succeededOrFailed()
+    displayName: 'Publish Test Results'
+
+  - task: ArchiveFiles@2
+    inputs:
+      rootFolderOrFile: '$(Build.BinariesDirectory)'
+      includeRootFolder: true
+      archiveType: 'zip'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+      replaceExistingArchive: true
+    displayName: 'Archive Files'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      ArtifactName: 'nestJs-platform'
+      publishLocation: 'Container'
+    displayName: 'Publish Build Artifacts'
+
+  - task: Docker@2
+    inputs:
+      containerRegistry: 'docker'
+      repository: 'mohamedamine1/backend'
+      command: 'buildAndPush'
+      Dockerfile: '**/Dockerfile'
+      tags: 'backend-pfe'
+    displayName: 'Build and Push Docker Image'
