@@ -3,16 +3,39 @@ pipeline {
     tools { 
         nodejs "NODE_HOME" // Replace "NODE_HOME" with your Node.js tool name
     }
+       environment {
+        FRONTEND_DIR = 'frontend'   
+        BACKEND_DIR = 'backend' 
+        GIT_REPO_URL = 'https://github.com/MedAmineHm/platform-azure.git'    
+        GIT_BRANCH = 'main'
+    }
     stages {
-        stage ('Build') {
+   stage('Preparation') {
             steps {
                 script {
-                    try {
-                        git branch: 'main', url: 'https://github.com/MedAmineHm/pfe-insomea-backend.git'
-                        sh 'npm install'
-                    } catch (err) {
-                        echo "An error occurred during the build stage: ${err}"
-                        error "Build stage failed"
+                    echo "Préparation de l'environnement"
+                    echo "Clonage du dépôt Git"
+                    sh "git clone -b ${GIT_BRANCH} ${GIT_REPO_URL} ."
+                }
+            }
+        }
+        stage('Install Dependencies') {
+            parallel {
+                stage('Install Frontend Dependencies') {
+                    steps {
+                        dir(FRONTEND_DIR) {
+                            echo 'Installation des dépendances pour le frontend ReactJS'
+                            sh 'npm install'
+                        }
+                    }
+                }
+
+                stage('Install Backend Dependencies') {
+                    steps {
+                        dir(BACKEND_DIR) {
+                            echo 'Installation des dépendances pour le backend NestJS'
+                            sh 'npm install'
+                        }
                     }
                 }
             }
