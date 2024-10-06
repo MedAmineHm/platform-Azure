@@ -33,38 +33,59 @@ pipeline {
                 }
 
                
-            
+            stage('SonarQube Analysis backend') {
+            steps {
+             script {
+                    withSonarQubeEnv('sonarqube') {
+                       dir(BACKEND_DIR) {
+                            sh 'npm install sonar-scanner'
+                            sh 'npm run sonar'
+                        }
+                    }     
+                } 
+            }
+        }
         
-       // stage('SonarQube Analysis') {
-         //   steps {
-           //     script {
-             //       withSonarQubeEnv('sonarqube') {
-               //         dir(BACKEND_DIR) {
-                 //           sh 'npm install sonar-scanner'
-                   //         sh 'npm run sonar'
-                     //   }
-                    //}     
-                //} 
-            //}
-        //}
-        //stage('Build Docker Image') {
-          //  steps {
-            //    script {
-              //      dir(BACKEND_DIR) { 
-                //        sh 'docker build -t mohamedamine1/backend-azure:backend .'
-                  //  }
-                //}  
-            //}
-        //}
+        stage('SonarQube Analysis frontend') {
+            steps {
+             script {
+                    withSonarQubeEnv('sonarqube') {
+                       dir(FRONTEND_DIR) {
+                            sh 'npm install sonar-scanner'
+                            sh 'npm run sonar'
+                        }
+                    }     
+                } 
+            }
+        }
+        stage('Build Docker Image backned') {
+          steps {
+             script {
+                    dir(BACKEND_DIR) { 
+                       sh 'docker build -t mohamedamine1/backend-azure:backend .'
+                    }
+                }  
+            }
+        }stage('Build Docker Image frontend') {
+          steps {
+             script {
+                    dir(FRONTEND_DIR) { 
+                       sh 'docker build -t mohamedamine1/frontend-azure:backend .'
+                    }
+                }  
+            }
+        }
         stage('Push Image to Docker Hub') {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
                         sh 'docker login -u mohamedamine1 -p ${dockerhubpwd}'
                         sh 'docker push mohamedamine1/backend-azure:backend'
+                        sh 'docker push mohamedamine1/frontend-azure:backend'
                     }
                 }  
             }
         }
+        
     }
 }
