@@ -5,6 +5,9 @@
   "main": "index.js",
   "author": "Creative Tim",
   "license": "MIT",
+   "script": {
+    "sonar": "sonar-scanner"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/creativetimofficial/blk-design-system-react.git"
