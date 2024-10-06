@@ -10,82 +10,84 @@ pipeline {
         GIT_BRANCH = 'main'
     }
     stages {
-         stage('Install Backend Dependencies') {
-                    steps {
-                        dir(BACKEND_DIR) {
-                            echo 'Installation des dépendances pour le backend NestJS'
-                            sh 'npm install'
-                        }
-                    }
+        stage('Install Backend Dependencies') {
+            steps {
+                dir(BACKEND_DIR) {
+                    echo 'Installing dependencies for the NestJS backend...'
+                    sh 'npm install'
                 }
+            }
+        }
         
-        
-           
-                stage('Install Frontend Dependencies') {
-                    steps {
-                           dir(FRONTEND_DIR) {
-        
-        echo 'Installing frontend dependencies for ReactJS'
-        sh 'rm -rf node_modules package-lock.json'
-        sh 'npm install'
-    }
-                    }
+        stage('Install Frontend Dependencies') {
+            steps {
+                dir(FRONTEND_DIR) {
+                    echo 'Installing dependencies for the ReactJS frontend...'
+                    sh 'rm -rf node_modules package-lock.json'
+                    sh 'npm install'
                 }
+            }
+        }
 
-               
-            stage('SonarQube Analysis backend') {
+        stage('SonarQube Analysis - Backend') {
             steps {
-             script {
+                script {
                     withSonarQubeEnv('sonarqube') {
-                       dir(BACKEND_DIR) {
+                        dir(BACKEND_DIR) {
+                            // Install sonar-scanner if not already installed in your environment
                             sh 'npm install sonar-scanner'
                             sh 'npm run sonar'
                         }
                     }     
                 } 
+            }
+        }
+
+        stage('SonarQube Analysis - Frontend') {
+            steps {
+                script {
+                    withSonarQubeEnv('sonarqube') {
+                        dir(FRONTEND_DIR) {
+                            // Install sonar-scanner if not already installed in your environment
+                            sh 'npm install sonar-scanner'
+                            sh 'npm run sonar'
+                        }
+                    }     
+                } 
+            }
+        }
+
+        stage('Build Docker Image - Backend') {
+            steps {
+                script {
+                    dir(BACKEND_DIR) { 
+                        sh 'docker build -t mohamedamine1/backend-azure:backend .'
+                    }
+                }  
             }
         }
         
-        stage('SonarQube Analysis frontend') {
+        stage('Build Docker Image - Frontend') {
             steps {
-             script {
-                    withSonarQubeEnv('sonarqube') {
-                       dir(FRONTEND_DIR) {
-                            sh 'npm install sonar-scanner'
-                            sh 'npm run sonar'
-                        }
-                    }     
-                } 
-            }
-        }
-        stage('Build Docker Image backned') {
-          steps {
-             script {
-                    dir(BACKEND_DIR) { 
-                       sh 'docker build -t mohamedamine1/backend-azure:backend .'
-                    }
-                }  
-            }
-        }stage('Build Docker Image frontend') {
-          steps {
-             script {
+                script {
                     dir(FRONTEND_DIR) { 
-                       sh 'docker build -t mohamedamine1/frontend-azure:backend .'
+                        sh 'docker build -t mohamedamine1/frontend-azure:frontend .' // Corrected image tag
                     }
                 }  
             }
         }
-        stage('Push Image to Docker Hub') {
+        
+        stage('Push Images to Docker Hub') {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
                         sh 'docker login -u mohamedamine1 -p ${dockerhubpwd}'
                         sh 'docker push mohamedamine1/backend-azure:backend'
-                        sh 'docker push mohamedamine1/frontend-azure:backend'
+                        sh 'docker push mohamedamine1/frontend-azure:frontend' // Corrected image tag
                     }
                 }  
             }
         }
         
-    }
+      
 }
