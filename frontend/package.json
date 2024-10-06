@@ -5,7 +5,7 @@
   "main": "index.js",
   "author": "Creative Tim",
   "license": "MIT",
-  "script": {
+  "scripts": {
     "sonar": "sonar-scanner"
   },
   "repository": {
