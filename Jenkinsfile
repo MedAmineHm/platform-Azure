@@ -46,7 +46,7 @@ pipeline {
         stage('SonarQube Analysis - Frontend') {
             steps {
                 script {
-                    withSonarQubeEnv('sonarqube') {
+                    withSonarQubeEnv('sonar') {
                         dir(FRONTEND_DIR) {
                             // Install sonar-scanner if not already installed in your environment
                             sh 'npm install sonar-scanner'
