@@ -149,6 +149,6 @@ spec:
     spec:
       containers:
         - name: my-react-app
-          image: mohamedamine1/frontend:frontend-pfe
+          image: mohamedamine1/frontend-azure:frontend
           ports:
             - containerPort: 3000
