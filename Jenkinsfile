@@ -10,6 +10,13 @@ pipeline {
         GIT_BRANCH = 'main'
     }
     stages {
+        stage('Clone Repository') {
+            steps {
+                echo 'Cloning the repository...'
+                git url: GIT_REPO_URL, branch: GIT_BRANCH
+            }
+        }
+
         stage('Install Backend Dependencies') {
             steps {
                 dir(BACKEND_DIR) {
@@ -46,7 +53,7 @@ pipeline {
         stage('SonarQube Analysis - Frontend') {
             steps {
                 script {
-                    withSonarQubeEnv('sonar') {
+                    withSonarQubeEnv('sonarqube') {
                         dir(FRONTEND_DIR) {
                             // Install sonar-scanner if not already installed in your environment
                             sh 'npm install sonar-scanner'
@@ -61,7 +68,7 @@ pipeline {
             steps {
                 script {
                     dir(BACKEND_DIR) { 
-                        sh 'docker build -t mohamedamine1/backend-azure:backend .'
+                        sh 'docker build -t mohamedamine1/backend-azure:latest .'
                     }
                 }  
             }
@@ -71,7 +78,7 @@ pipeline {
             steps {
                 script {
                     dir(FRONTEND_DIR) { 
-                        sh 'docker build -t mohamedamine1/frontend-azure:frontend .' // Corrected image tag
+                        sh 'docker build -t mohamedamine1/frontend-azure:latest .' 
                     }
                 }  
             }
@@ -82,8 +89,8 @@ pipeline {
                 script {
                     withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
                         sh 'docker login -u mohamedamine1 -p ${dockerhubpwd}'
-                        sh 'docker push mohamedamine1/backend-azure:backend'
-                        sh 'docker push mohamedamine1/frontend-azure:frontend' // Corrected image tag
+                        sh 'docker push mohamedamine1/backend-azure:latest'
+                        sh 'docker push mohamedamine1/frontend-azure:latest' 
                     }
                 }  
             }
