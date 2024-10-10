@@ -17,70 +17,82 @@ pipeline {
             }
         }
 
-        stage('Install Backend Dependencies') {
-            steps {
-                dir(BACKEND_DIR) {
-                    echo 'Installing dependencies for the NestJS backend...'
-                    sh 'npm install'
-                }
-            }
-        }
-        
-        stage('Install Frontend Dependencies') {
-            steps {
-                dir(FRONTEND_DIR) {
-                    echo 'Installing dependencies for the ReactJS frontend...'
-                    sh 'npm install'
-                }
-            }
-        }
-
-        stage('SonarQube Analysis - Backend') {
-            steps {
-                script {
-                    withSonarQubeEnv('sonarqube') {
+        stage('Install Dependencies') {
+            parallel {
+                stage('Install Backend Dependencies') {
+                    steps {
                         dir(BACKEND_DIR) {
-                            sh 'npm install sonar-scanner'
-                            sh 'npm run sonar'
+                            echo 'Installing dependencies for the NestJS backend...'
+                            sh 'npm install'
                         }
-                    }     
-                } 
-            }
-        }
-
-        stage('SonarQube Analysis - Frontend') {
-            steps {
-                script {
-                    withSonarQubeEnv('sonarqube') {
+                    }
+                }
+                
+                stage('Install Frontend Dependencies') {
+                    steps {
                         dir(FRONTEND_DIR) {
-                            sh 'npm install sonar-scanner'
-                            sh 'npm run sonar'
+                            echo 'Installing dependencies for the ReactJS frontend...'
+                            sh 'npm install'
                         }
-                    }     
-                } 
+                    }
+                }
             }
         }
 
-        stage('Build Docker Image - Backend') {
-            steps {
-                script {
-                    dir(BACKEND_DIR) { 
-                        sh 'docker build -t mohamedamine1/backend-azure:latest .'
+        stage('SonarQube Analysis') {
+            parallel {
+                stage('SonarQube Analysis - Backend') {
+                    steps {
+                        script {
+                            withSonarQubeEnv('sonarqube') {
+                                dir(BACKEND_DIR) {
+                                    sh 'npm install sonar-scanner'
+                                    sh 'npm run sonar'
+                                }
+                            }     
+                        } 
                     }
-                }  
+                }
+
+                stage('SonarQube Analysis - Frontend') {
+                    steps {
+                        script {
+                            withSonarQubeEnv('sonarqube') {
+                                dir(FRONTEND_DIR) {
+                                    sh 'npm install sonar-scanner'
+                                    sh 'npm run sonar'
+                                }
+                            }     
+                        } 
+                    }
+                }
             }
         }
-        
-        stage('Build Docker Image - Frontend') {
-            steps {
-                script {
-                    dir(FRONTEND_DIR) { 
-                        sh 'docker build -t mohamedamine1/frontend-azure:latest .' 
+
+        stage('Build Docker Images') {
+            parallel {
+                stage('Build Docker Image - Backend') {
+                    steps {
+                        script {
+                            dir(BACKEND_DIR) { 
+                                sh 'docker build -t mohamedamine1/backend-azure:latest .'
+                            }
+                        }  
                     }
-                }  
+                }
+                
+                stage('Build Docker Image - Frontend') {
+                    steps {
+                        script {
+                            dir(FRONTEND_DIR) { 
+                                sh 'docker build -t mohamedamine1/frontend-azure:latest .' 
+                            }
+                        }  
+                    }
+                }
             }
         }
-        
+
         stage('Push Images to Docker Hub') {
             steps {
                 script {
