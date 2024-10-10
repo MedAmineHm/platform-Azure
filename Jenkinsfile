@@ -21,7 +21,9 @@ pipeline {
             steps {
                 dir(BACKEND_DIR) {
                     echo 'Installing dependencies for the NestJS backend...'
-                    sh 'npm install'
+                    cache(path: './node_modules', key: "${GIT_BRANCH}-backend", restoreKeys: ["${GIT_BRANCH}-backend"]) {
+                        sh 'npm install'
+                    }
                 }
             }
         }
@@ -30,8 +32,9 @@ pipeline {
             steps {
                 dir(FRONTEND_DIR) {
                     echo 'Installing dependencies for the ReactJS frontend...'
-                    sh 'rm -rf node_modules package-lock.json'
-                    sh 'npm install'
+                    cache(path: './node_modules', key: "${GIT_BRANCH}-frontend", restoreKeys: ["${GIT_BRANCH}-frontend"]) {
+                        sh 'npm install'
+                    }
                 }
             }
         }
@@ -41,7 +44,6 @@ pipeline {
                 script {
                     withSonarQubeEnv('sonarqube') {
                         dir(BACKEND_DIR) {
-                            // Install sonar-scanner if not already installed in your environment
                             sh 'npm install sonar-scanner'
                             sh 'npm run sonar'
                         }
@@ -55,7 +57,6 @@ pipeline {
                 script {
                     withSonarQubeEnv('sonarqube') {
                         dir(FRONTEND_DIR) {
-                            // Install sonar-scanner if not already installed in your environment
                             sh 'npm install sonar-scanner'
                             sh 'npm run sonar'
                         }
@@ -95,5 +96,5 @@ pipeline {
                 }  
             }
         }
-    } // Ensure this closing brace is present
+    }
 }
