@@ -8,7 +8,6 @@ pipeline {
         BACKEND_DIR = 'backend' 
         GIT_REPO_URL = 'https://github.com/MedAmineHm/platform-azure.git'    
         GIT_BRANCH = 'main'
-        IMAGE_NAMES = ['mohamedamine1/backend-azure', 'mohamedamine1/frontend-azure'] // Liste des images à conserver
     }
     stages {
         stage('Clone Repository') {
@@ -103,28 +102,6 @@ pipeline {
                         sh 'docker push mohamedamine1/frontend-azure:latest' 
                     }
                 }  
-            }
-        }
-
-        // Étape de nettoyage
-        stage('Cleanup') {
-            steps {
-                echo 'Cleaning up unused Docker images...'
-                script {
-                    // Supprime les images de backend et frontend qui ont un tag différent de "latest" ou "<none>"
-                    def images = sh(script: 'docker images', returnStdout: true).trim().split("\n").drop(1) // Ignorer l'en-tête
-                    for (image in images) {
-                        def details = image.trim().split("\\s+")
-                        def repository = details[0]
-                        def tag = details[1]
-
-                        // Vérifie si l'image fait partie des images à gérer
-                        if ((repository == 'mohamedamine1/backend-azure' || repository == 'mohamedamine1/frontend-azure') && 
-                            (tag != 'latest' && tag != '<none>')) {
-                            sh "docker rmi -f ${details[2]}" // Supprime l'image
-                        }
-                    }
-                }
             }
         }
     }
