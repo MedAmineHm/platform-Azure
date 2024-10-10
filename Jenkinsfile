@@ -21,9 +21,7 @@ pipeline {
             steps {
                 dir(BACKEND_DIR) {
                     echo 'Installing dependencies for the NestJS backend...'
-                    cache(path: './node_modules', key: "${GIT_BRANCH}-backend", restoreKeys: ["${GIT_BRANCH}-backend"]) {
-                        sh 'npm install'
-                    }
+                    sh 'npm install'
                 }
             }
         }
@@ -32,9 +30,7 @@ pipeline {
             steps {
                 dir(FRONTEND_DIR) {
                     echo 'Installing dependencies for the ReactJS frontend...'
-                    cache(path: './node_modules', key: "${GIT_BRANCH}-frontend", restoreKeys: ["${GIT_BRANCH}-frontend"]) {
-                        sh 'npm install'
-                    }
+                    sh 'npm install'
                 }
             }
         }
