@@ -9,9 +9,6 @@ pipeline {
         GIT_REPO_URL = 'https://github.com/MedAmineHm/platform-azure.git'    
         GIT_BRANCH = 'main'
         DOCKER_USERNAME = 'mohamedamine1'
-        BUILD_NUMBER = env.BUILD_NUMBER
-        DOCKER_IMAGE_BACKEND = "${DOCKER_USERNAME}/backend-azure:${BUILD_NUMBER}"
-        DOCKER_IMAGE_FRONTEND = "${DOCKER_USERNAME}/frontend-azure:${BUILD_NUMBER}"
     }
     stages {
         stage('Clone Repository') {
@@ -41,8 +38,6 @@ pipeline {
                 }
             }
         }
-
-        
 
         stage('SonarQube Analysis') {
             parallel {
@@ -78,8 +73,10 @@ pipeline {
                 stage('Build Docker Image - Backend') {
                     steps {
                         script {
+                            def buildNumber = env.BUILD_NUMBER ?: 'latest'  // Fallback to 'latest' if not available
+                            def dockerImageBackend = "${DOCKER_USERNAME}/backend-azure:${buildNumber}"
                             dir(BACKEND_DIR) { 
-                                sh "docker build -t ${DOCKER_IMAGE_BACKEND} ."
+                                sh "docker build -t ${dockerImageBackend} ."
                             }
                         }  
                     }
@@ -87,8 +84,10 @@ pipeline {
                 stage('Build Docker Image - Frontend') {
                     steps {
                         script {
+                            def buildNumber = env.BUILD_NUMBER ?: 'latest'  // Fallback to 'latest' if not available
+                            def dockerImageFrontend = "${DOCKER_USERNAME}/frontend-azure:${buildNumber}"
                             dir(FRONTEND_DIR) { 
-                                sh "docker build -t ${DOCKER_IMAGE_FRONTEND} ." 
+                                sh "docker build -t ${dockerImageFrontend} ." 
                             }
                         }  
                     }
@@ -102,7 +101,7 @@ pipeline {
                     steps {
                         script {
                             echo 'Scanning the backend Docker image for vulnerabilities...'
-                            sh "trivy image --severity HIGH,CRITICAL --output backend-scan-results.json ${DOCKER_IMAGE_BACKEND}"
+                            sh "trivy image --severity HIGH,CRITICAL --output backend-scan-results.json ${DOCKER_USERNAME}/backend-azure:${env.BUILD_NUMBER}"
                         }
                     }
                 }
@@ -110,7 +109,7 @@ pipeline {
                     steps {
                         script {
                             echo 'Scanning the frontend Docker image for vulnerabilities...'
-                            sh "trivy image --severity HIGH,CRITICAL --output frontend-scan-results.json ${DOCKER_IMAGE_FRONTEND}"
+                            sh "trivy image --severity HIGH,CRITICAL --output frontend-scan-results.json ${DOCKER_USERNAME}/frontend-azure:${env.BUILD_NUMBER}"
                         }
                     }
                 }
@@ -122,8 +121,8 @@ pipeline {
                 script {
                     withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
                         sh 'docker login -u ${DOCKER_USERNAME} -p ${dockerhubpwd}'
-                        sh "docker push ${DOCKER_IMAGE_BACKEND}"
-                        sh "docker push ${DOCKER_IMAGE_FRONTEND}" 
+                        sh "docker push ${DOCKER_USERNAME}/backend-azure:${env.BUILD_NUMBER}"
+                        sh "docker push ${DOCKER_USERNAME}/frontend-azure:${env.BUILD_NUMBER}" 
                     }
                 }  
             }
