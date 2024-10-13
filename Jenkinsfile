@@ -38,6 +38,27 @@ pipeline {
                 }
             }
         }
+        stage('Build Projects') {
+            parallel {
+                stage('Build Backend') {
+                    steps {
+                        dir(BACKEND_DIR) {
+                            echo 'Building the NestJS backend...'
+                            sh 'npm run build' 
+                        }
+                    }
+                }
+
+                stage('Build Frontend') {
+                    steps {
+                        dir(FRONTEND_DIR) {
+                            echo 'Building the ReactJS frontend...'
+                            sh 'npm run build' 
+                        }
+                    }
+                }
+            }
+        }
 
         stage('SonarQube Analysis') {
             parallel {
@@ -68,6 +89,13 @@ pipeline {
                 }
             }
         }
+         stage('Check Quality Gate') {
+            steps {
+                timeout(time: 1, unit: 'HOURS') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
 
         stage('Build Docker Images') {
             parallel {
@@ -88,6 +116,27 @@ pipeline {
                                 sh 'docker build -t mohamedamine1/frontend-azure:latest .' 
                             }
                         }  
+                    }
+                }
+            }
+        }
+        stage('Docker Security Scan') {
+            parallel {
+                stage('Docker Scan - Backend') {
+                    steps {
+                        script {
+                            echo 'Scanning the backend Docker image for vulnerabilities...'
+                            sh 'docker scan mohamedamine1/backend-azure:latest --file backend/Dockerfile --severity high'
+                        }
+                    }
+                }
+
+                stage('Docker Scan - Frontend') {
+                    steps {
+                        script {
+                            echo 'Scanning the frontend Docker image for vulnerabilities...'
+                            sh 'docker scan mohamedamine1/frontend-azure:latest --file frontend/Dockerfile --severity high'
+                        }
                     }
                 }
             }
