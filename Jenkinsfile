@@ -38,27 +38,7 @@ pipeline {
                 }
             }
         }
-        stage('Build Projects') {
-            parallel {
-                stage('Build Backend') {
-                    steps {
-                        dir(BACKEND_DIR) {
-                            echo 'Building the NestJS backend...'
-                            sh 'npm run build' 
-                        }
-                    }
-                }
 
-                stage('Build Frontend') {
-                    steps {
-                        dir(FRONTEND_DIR) {
-                            echo 'Building the ReactJS frontend...'
-                            sh 'npm run build' 
-                        }
-                    }
-                }
-            }
-        }
 
         stage('SonarQube Analysis') {
             parallel {
