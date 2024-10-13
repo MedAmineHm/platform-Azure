@@ -39,7 +39,6 @@ pipeline {
             }
         }
 
-
         stage('SonarQube Analysis') {
             parallel {
                 stage('SonarQube Analysis - Backend') {
@@ -69,7 +68,6 @@ pipeline {
                 }
             }
         }
-        
 
         stage('Build Docker Images') {
             parallel {
@@ -94,28 +92,28 @@ pipeline {
                 }
             }
         }
-  stage('Docker Security Scan') {
-    parallel {
-        stage('Docker Scan - Backend') {
-            steps {
-                script {
-                    echo 'Scanning the backend Docker image for vulnerabilities...'
-                    sh 'docker scan mohamedamine1/backend-azure:latest --severity high'
+
+        stage('Trivy Security Scan') {
+            parallel {
+                stage('Trivy Scan - Backend') {
+                    steps {
+                        script {
+                            echo 'Scanning the backend Docker image for vulnerabilities...'
+                            sh 'trivy image --severity HIGH,CRITICAL mohamedamine1/backend-azure:latest'
+                        }
+                    }
+                }
+
+                stage('Trivy Scan - Frontend') {
+                    steps {
+                        script {
+                            echo 'Scanning the frontend Docker image for vulnerabilities...'
+                            sh 'trivy image --severity HIGH,CRITICAL mohamedamine1/frontend-azure:latest'
+                        }
+                    }
                 }
             }
         }
-
-        stage('Docker Scan - Frontend') {
-            steps {
-                script {
-                    echo 'Scanning the frontend Docker image for vulnerabilities...'
-                    sh 'docker scan mohamedamine1/frontend-azure:latest --severity high'
-                }
-            }
-        }
-    }
-}
-
 
         stage('Push Images to Docker Hub') {
             steps {
