@@ -94,27 +94,28 @@ pipeline {
                 }
             }
         }
-        stage('Docker Security Scan') {
-            parallel {
-                stage('Docker Scan - Backend') {
-                    steps {
-                        script {
-                            echo 'Scanning the backend Docker image for vulnerabilities...'
-                            sh 'docker scan mohamedamine1/backend-azure:latest --file backend/Dockerfile --severity high'
-                        }
-                    }
-                }
-
-                stage('Docker Scan - Frontend') {
-                    steps {
-                        script {
-                            echo 'Scanning the frontend Docker image for vulnerabilities...'
-                            sh 'docker scan mohamedamine1/frontend-azure:latest --file frontend/Dockerfile --severity high'
-                        }
-                    }
+  stage('Docker Security Scan') {
+    parallel {
+        stage('Docker Scan - Backend') {
+            steps {
+                script {
+                    echo 'Scanning the backend Docker image for vulnerabilities...'
+                    sh 'docker scan mohamedamine1/backend-azure:latest --severity high'
                 }
             }
         }
+
+        stage('Docker Scan - Frontend') {
+            steps {
+                script {
+                    echo 'Scanning the frontend Docker image for vulnerabilities...'
+                    sh 'docker scan mohamedamine1/frontend-azure:latest --severity high'
+                }
+            }
+        }
+    }
+}
+
 
         stage('Push Images to Docker Hub') {
             steps {
