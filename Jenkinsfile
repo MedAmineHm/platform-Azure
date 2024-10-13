@@ -8,6 +8,10 @@ pipeline {
         BACKEND_DIR = 'backend' 
         GIT_REPO_URL = 'https://github.com/MedAmineHm/platform-azure.git'    
         GIT_BRANCH = 'main'
+        DOCKER_USERNAME = 'mohamedamine1'
+        BUILD_NUMBER = env.BUILD_NUMBER
+        DOCKER_IMAGE_BACKEND = "${DOCKER_USERNAME}/backend-azure:${BUILD_NUMBER}"
+        DOCKER_IMAGE_FRONTEND = "${DOCKER_USERNAME}/frontend-azure:${BUILD_NUMBER}"
     }
     stages {
         stage('Clone Repository') {
@@ -23,21 +27,22 @@ pipeline {
                     steps {
                         dir(BACKEND_DIR) {
                             echo 'Installing dependencies for the NestJS backend...'
-                            sh 'npm install'
+                            sh 'npm ci --prefer-offline'
                         }
                     }
                 }
-                
                 stage('Install Frontend Dependencies') {
                     steps {
                         dir(FRONTEND_DIR) {
                             echo 'Installing dependencies for the ReactJS frontend...'
-                            sh 'npm install'
+                            sh 'npm ci --prefer-offline'
                         }
                     }
                 }
             }
         }
+
+        
 
         stage('SonarQube Analysis') {
             parallel {
@@ -47,20 +52,19 @@ pipeline {
                             withSonarQubeEnv('sonarqube') {
                                 dir(BACKEND_DIR) {
                                     sh 'npm install sonar-scanner'
-                                    sh 'npm run sonar'
+                                    sh 'npm run sonar -Dsonar.qualityGate.wait=true'
                                 }
                             }     
                         } 
                     }
                 }
-
                 stage('SonarQube Analysis - Frontend') {
                     steps {
                         script {
                             withSonarQubeEnv('sonarqube') {
                                 dir(FRONTEND_DIR) {
                                     sh 'npm install sonar-scanner'
-                                    sh 'npm run sonar'
+                                    sh 'npm run sonar -Dsonar.qualityGate.wait=true'
                                 }
                             }     
                         } 
@@ -75,17 +79,16 @@ pipeline {
                     steps {
                         script {
                             dir(BACKEND_DIR) { 
-                                sh 'docker build -t mohamedamine1/backend-azure:latest .'
+                                sh "docker build -t ${DOCKER_IMAGE_BACKEND} ."
                             }
                         }  
                     }
                 }
-                
                 stage('Build Docker Image - Frontend') {
                     steps {
                         script {
                             dir(FRONTEND_DIR) { 
-                                sh 'docker build -t mohamedamine1/frontend-azure:latest .' 
+                                sh "docker build -t ${DOCKER_IMAGE_FRONTEND} ." 
                             }
                         }  
                     }
@@ -99,16 +102,15 @@ pipeline {
                     steps {
                         script {
                             echo 'Scanning the backend Docker image for vulnerabilities...'
-                            sh 'trivy image --severity HIGH,CRITICAL mohamedamine1/backend-azure:latest'
+                            sh "trivy image --severity HIGH,CRITICAL --output backend-scan-results.json ${DOCKER_IMAGE_BACKEND}"
                         }
                     }
                 }
-
                 stage('Trivy Scan - Frontend') {
                     steps {
                         script {
                             echo 'Scanning the frontend Docker image for vulnerabilities...'
-                            sh 'trivy image --severity HIGH,CRITICAL mohamedamine1/frontend-azure:latest'
+                            sh "trivy image --severity HIGH,CRITICAL --output frontend-scan-results.json ${DOCKER_IMAGE_FRONTEND}"
                         }
                     }
                 }
@@ -119,12 +121,17 @@ pipeline {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
-                        sh 'docker login -u mohamedamine1 -p ${dockerhubpwd}'
-                        sh 'docker push mohamedamine1/backend-azure:latest'
-                        sh 'docker push mohamedamine1/frontend-azure:latest' 
+                        sh 'docker login -u ${DOCKER_USERNAME} -p ${dockerhubpwd}'
+                        sh "docker push ${DOCKER_IMAGE_BACKEND}"
+                        sh "docker push ${DOCKER_IMAGE_FRONTEND}" 
                     }
                 }  
             }
+        }
+    }
+    post {
+        always {
+            sh 'docker system prune -af'
         }
     }
 }
