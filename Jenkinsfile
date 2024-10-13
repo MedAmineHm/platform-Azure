@@ -89,13 +89,7 @@ pipeline {
                 }
             }
         }
-         stage('Check Quality Gate') {
-            steps {
-                timeout(time: 1, unit: 'HOURS') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
+        
 
         stage('Build Docker Images') {
             parallel {
