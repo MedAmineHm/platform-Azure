@@ -138,11 +138,11 @@ pipeline {
         stage('Deploying App to Kubernetes') {
       steps {
         script {
-                    kubernetesDeploy(configs: "${DEPLOYMENT_YAML_PATH}", kubeconfigId: "kubernetes")
-                    kubernetesDeploy(configs: "${SERVICE_YAML_PATH}", kubeconfigId: "kubernetes")
-                    kubernetesDeploy(configs: "${AZURE_SECRET_YAML_PATH}", kubeconfigId: "kubernetes")
-                    kubernetesDeploy(configs: "${MONGO_PERSISTENT_VOLUME_YAML_PATH}", kubeconfigId: "kubernetes")
-                    kubernetesDeploy(configs: "${SECRET_YAML_PATH}", kubeconfigId: "kubernetes")  //aaaaaa
+                    kubernetesDeploy(configs: "${DEPLOYMENT_YAML_PATH}", kubeconfigId: "Kubernetes")
+                    kubernetesDeploy(configs: "${SERVICE_YAML_PATH}", kubeconfigId: "Kubernetes")
+                    kubernetesDeploy(configs: "${AZURE_SECRET_YAML_PATH}", kubeconfigId: "Kubernetes")
+                    kubernetesDeploy(configs: "${MONGO_PERSISTENT_VOLUME_YAML_PATH}", kubeconfigId: "Kubernetes")
+                    kubernetesDeploy(configs: "${SECRET_YAML_PATH}", kubeconfigId: "Kubernetes")  //aaaaaa
         }
       }
     }
