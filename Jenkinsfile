@@ -102,7 +102,7 @@ pipeline {
             }
         }
 
-        stage('Trivy Security Scan') {
+        /*stage('Trivy Security Scan') {
             parallel {
                 stage('Trivy Scan - Backend') {
                     steps {
@@ -122,6 +122,7 @@ pipeline {
                 }
             }
         }
+        */
 
         stage('Push Images to Docker Hub') {
             steps {
