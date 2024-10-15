@@ -25,13 +25,13 @@ pipeline {
             }
         }
 
-       /* stage('Install Dependencies') {
+        stage('Install Dependencies') {
             parallel {
                 stage('Install Backend Dependencies') {
                     steps {
                         dir(BACKEND_DIR) {
                             echo 'Installing dependencies for the NestJS backend...'
-                            sh 'npm ci --prefer-offline'
+                            sh 'npm install'
                         }
                     }
                 }
@@ -39,12 +39,12 @@ pipeline {
                     steps {
                         dir(FRONTEND_DIR) {
                             echo 'Installing dependencies for the ReactJS frontend...'
-                            sh 'npm ci --prefer-offline'
+                            sh 'npm install'
                         }
                     }
                 }
             }
-        }*/
+        }
 
         /*stage('SonarQube Analysis') {
             parallel {
