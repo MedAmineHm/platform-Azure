@@ -9,8 +9,10 @@ spec:
   ports:
     - port: 3001
       targetPort: 3001
+      protocol: TCP  # Added protocol for clarity
 
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -22,8 +24,10 @@ spec:
   ports:
     - port: 27017
       targetPort: 27017
+      protocol: TCP  # Added protocol for clarity
 
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -35,11 +39,12 @@ spec:
     app: redis
   type: NodePort
   ports:
-    - protocol: TCP
-      port: 6379
+    - port: 6379
       targetPort: 6379
+      protocol: TCP  # Added protocol for clarity
 
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -51,3 +56,4 @@ spec:
   ports:
     - port: 3000
       targetPort: 3000
+      protocol: TCP  # Added protocol for clarity
