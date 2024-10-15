@@ -9,6 +9,13 @@ pipeline {
         GIT_REPO_URL = 'https://github.com/MedAmineHm/platform-azure.git'    
         GIT_BRANCH = 'main'
         DOCKER_USERNAME = 'mohamedamine1'
+        TEMPLATES_DIR = 'templates'
+
+        DEPLOYMENT_YAML_PATH = "${TEMPLATES_DIR}/deployment.yaml"
+        SERVICE_YAML_PATH = "${TEMPLATES_DIR}/service.yaml"
+        AZURE_SECRET_YAML_PATH = "${TEMPLATES_DIR}/azure-secrets.yaml"
+        MONGO_PERSISTENT_VOLUME_YAML_PATH = "${TEMPLATES_DIR}/mongodb-persistent-volume.yaml"
+        SECRET_YAML_PATH = "${TEMPLATES_DIR}/secret.yaml" 
     }
     stages {
         stage('Clone Repository') {
@@ -39,7 +46,7 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
+        /*stage('SonarQube Analysis') {
             parallel {
                 stage('SonarQube Analysis - Backend') {
                     steps {
@@ -66,7 +73,7 @@ pipeline {
                     }
                 }
             }
-        }
+        }*/
 
         stage('Build Docker Images') {
             parallel {
@@ -127,10 +134,17 @@ pipeline {
                 }  
             }
         }
-    }
-    post {
-        always {
-            sh 'docker system prune -af'
+        stage('Deploying App to Kubernetes') {
+      steps {
+        script {
+                    kubernetesDeploy(configs: "${DEPLOYMENT_YAML_PATH}", kubeconfigId: "kubernetes")
+                    kubernetesDeploy(configs: "${SERVICE_YAML_PATH}", kubeconfigId: "kubernetes")
+                    kubernetesDeploy(configs: "${AZURE_SECRET_YAML_PATH}", kubeconfigId: "kubernetes")
+                    kubernetesDeploy(configs: "${MONGO_PERSISTENT_VOLUME_YAML_PATH}", kubeconfigId: "kubernetes")
+                    kubernetesDeploy(configs: "${SECRET_YAML_PATH}", kubeconfigId: "kubernetes") 
         }
+      }
     }
+    }
+   
 }
