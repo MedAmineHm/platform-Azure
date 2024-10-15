@@ -106,8 +106,8 @@ pipeline {
                 script {
                     withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
                         sh 'docker login -u mohamedamine1 -p ${dockerhubpwd}'
-                        sh "docker push mohamedamine1/backend-azure:latest"
-                        sh "docker push mohamedamine1/frontend-azure:latest" 
+                        sh "docker push mohamedamine1/backend-azure:back"
+                        sh "docker push mohamedamine1/frontend-azure:front" 
                     }
                 }  
             }
