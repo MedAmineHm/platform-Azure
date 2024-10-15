@@ -25,7 +25,7 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
+       /* stage('Install Dependencies') {
             parallel {
                 stage('Install Backend Dependencies') {
                     steps {
@@ -44,7 +44,7 @@ pipeline {
                     }
                 }
             }
-        }
+        }*/
 
         /*stage('SonarQube Analysis') {
             parallel {
@@ -66,7 +66,7 @@ pipeline {
                             withSonarQubeEnv('sonarqube') {
                                 dir(FRONTEND_DIR) {
                                     sh 'npm install sonar-scanner'
-                                    sh 'npm run sonar -Dsonar.qualityGate.wait=true'
+                                    sh 'npm run sonar -Dsonar.qualityGate.wait=true' /aaaaa
                                 }
                             }     
                         } 
@@ -121,8 +121,8 @@ pipeline {
                     }
                 }
             }
-        }
-        */
+        }*/
+        
 
         stage('Push Images to Docker Hub') {
             steps {
@@ -142,7 +142,7 @@ pipeline {
                     kubernetesDeploy(configs: "${SERVICE_YAML_PATH}", kubeconfigId: "kubernetes")
                     kubernetesDeploy(configs: "${AZURE_SECRET_YAML_PATH}", kubeconfigId: "kubernetes")
                     kubernetesDeploy(configs: "${MONGO_PERSISTENT_VOLUME_YAML_PATH}", kubeconfigId: "kubernetes")
-                    kubernetesDeploy(configs: "${SECRET_YAML_PATH}", kubeconfigId: "kubernetes") 
+                    kubernetesDeploy(configs: "${SECRET_YAML_PATH}", kubeconfigId: "kubernetes")  //aaaaaa
         }
       }
     }
