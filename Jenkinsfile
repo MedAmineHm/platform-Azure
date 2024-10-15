@@ -13,7 +13,6 @@ pipeline {
         DEPLOYMENT_YAML_PATH = "${TEMPLATES_DIR}/deployment.yaml"
         SERVICE_YAML_PATH = "${TEMPLATES_DIR}/service.yaml"
         AZURE_SECRET_YAML_PATH = "${TEMPLATES_DIR}/azure-secrets.yaml"
-        MONGO_PERSISTENT_VOLUME_YAML_PATH = "${TEMPLATES_DIR}/mongodb-persistent-volume.yaml"
         SECRET_YAML_PATH = "${TEMPLATES_DIR}/secret.yaml" 
     }
     stages {
@@ -118,7 +117,6 @@ pipeline {
                     kubernetesDeploy(configs: "${DEPLOYMENT_YAML_PATH}", kubeconfigId: "Kubernetes")
                     kubernetesDeploy(configs: "${SERVICE_YAML_PATH}", kubeconfigId: "Kubernetes")
                     kubernetesDeploy(configs: "${AZURE_SECRET_YAML_PATH}", kubeconfigId: "Kubernetes")
-                    kubernetesDeploy(configs: "${MONGO_PERSISTENT_VOLUME_YAML_PATH}", kubeconfigId: "Kubernetes")
                     kubernetesDeploy(configs: "${SECRET_YAML_PATH}", kubeconfigId: "Kubernetes")  
         }
       }
