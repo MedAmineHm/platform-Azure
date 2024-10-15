@@ -5,7 +5,7 @@ metadata:
 spec:
   selector:
     app: my-nest-app
-  type: LoadBalancer
+  type: NodePort
   ports:
     - port: 3001
       targetPort: 3001
@@ -18,7 +18,7 @@ metadata:
 spec:
   selector:
     app: mongodb
-  type: LoadBalancer
+  type: NodePort
   ports:
     - port: 27017
       targetPort: 27017
@@ -33,7 +33,7 @@ metadata:
 spec:
   selector:
     app: redis
-  type: LoadBalancer
+  type: NodePort
   ports:
     - protocol: TCP
       port: 6379
@@ -47,7 +47,7 @@ metadata:
 spec:
   selector:
     app: my-react-app
-  type: LoadBalancer
+  type: NodePort
   ports:
     - port: 3000
       targetPort: 3000
