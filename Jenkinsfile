@@ -13,7 +13,8 @@ pipeline {
         DEPLOYMENT_YAML_PATH = "${TEMPLATES_DIR}/deployment.yaml"
         SERVICE_YAML_PATH = "${TEMPLATES_DIR}/service.yaml"
         AZURE_SECRET_YAML_PATH = "${TEMPLATES_DIR}/azure-secrets.yaml"
-        SECRET_YAML_PATH = "${TEMPLATES_DIR}/secret.yaml" 
+        SECRET_YAML_PATH = "${TEMPLATES_DIR}/secret.yaml"
+        MONGODB_PV_YAML_PATH = "${TEMPLATES_DIR}/mongodb-persistent-volume.yaml"  // Add this line
     }
     stages {
         stage('Clone Repository') {
@@ -71,14 +72,13 @@ pipeline {
                     }
                 }
             }
-        }*/
+        }*/ 
 
         stage('Build Docker Images') {
             parallel {
                 stage('Build Docker Image - Backend') {
                     steps {
                         script {
-                            
                             dir(BACKEND_DIR) { 
                                 sh "docker build -t mohamedamine1/backend-azure:back ."
                             }
@@ -88,7 +88,6 @@ pipeline {
                 stage('Build Docker Image - Frontend') {
                     steps {
                         script {
-                            
                             dir(FRONTEND_DIR) { 
                                 sh "docker build -t mohamedamine1/frontend-azure:front ." 
                             }
@@ -97,8 +96,6 @@ pipeline {
                 }
             }
         }
-
-    
 
         stage('Push Images to Docker Hub') {
             steps {
@@ -112,15 +109,15 @@ pipeline {
             }
         }
         stage('Deploying App to Kubernetes') {
-      steps {
-        script {
+            steps {
+                script {
+                    kubernetesDeploy(configs: "${MONGODB_PV_YAML_PATH}", kubeconfigId: "Kubernetes") // Deploy the PV and PVC first
                     kubernetesDeploy(configs: "${DEPLOYMENT_YAML_PATH}", kubeconfigId: "Kubernetes")
                     kubernetesDeploy(configs: "${SERVICE_YAML_PATH}", kubeconfigId: "Kubernetes")
                     kubernetesDeploy(configs: "${AZURE_SECRET_YAML_PATH}", kubeconfigId: "Kubernetes")
                     kubernetesDeploy(configs: "${SECRET_YAML_PATH}", kubeconfigId: "Kubernetes")  
+                }
+            }
         }
-      }
     }
-    }
-   
 }
