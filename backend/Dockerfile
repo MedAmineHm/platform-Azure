@@ -1,5 +1,5 @@
-# Use the official Node.js image
-FROM node:20
+# Stage 1: Build the application
+FROM node:20 as builder
 
 # Set the working directory
 WORKDIR /app
@@ -9,6 +9,21 @@ COPY package*.json ./
 
 # Install dependencies
 RUN npm install
+
+# Copy the rest of the application code
+COPY . .
+
+# Build the application
+RUN npm run build
+
+# Stage 2: Production image
+FROM node:20
+
+# Set the working directory
+WORKDIR /app
+
+# Copy only necessary files from the builder stage
+COPY --from=builder /app /app
 
 # Install Azure CLI
 RUN apt-get update && \
@@ -22,17 +37,8 @@ RUN curl -fsSL https://raw.githubusercontent.com/infracost/infracost/master/scri
 # Add Infracost to the PATH
 ENV PATH="/usr/local/bin:${PATH}"
 
-# Copy the rest of the application code
-COPY . .
-
-# Build the application
-RUN npm run build
-
-# Expose the port on which the application listens
+# Expose the port
 EXPOSE 3001
 
-# Set the command to run your app
+# Command to run the application
 CMD ["node", "dist/main"]
-
-# Check Infracost installation
-RUN infracost --version
