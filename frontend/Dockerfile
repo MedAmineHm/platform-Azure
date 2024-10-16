@@ -1,23 +1,29 @@
-# Use the official Node.js image
-FROM node:18-alpine
+# Étape 1 : Construction de l'application
+FROM node:20 AS builder
 
-# Set environment variable to disable auto-opening browser
-ENV BROWSER=none
-
-# Set the working directory
+# Définir le répertoire de travail
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Copier les fichiers de dépendances Node.js
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install --legacy-peer-deps
+# Installer les dépendances
+RUN npm install
 
-# Copy the rest of the application code
+# Copier le reste des fichiers de l'application
 COPY . .
 
-# Expose the port on which the application listens
-EXPOSE 3000
+# Construire l'application pour la production
+RUN npm run build
 
-# Set the command to run your app
-CMD ["npm", "start"]
+# Étape 2 : Serveur de production
+FROM nginx:alpine
+
+# Copier les fichiers construits vers le répertoire de Nginx
+COPY --from=builder /app/build /usr/share/nginx/html
+
+# Exposer le port sur lequel Nginx écoute
+EXPOSE 80
+
+# Démarrer Nginx
+CMD ["nginx", "-g", "daemon off;"]
