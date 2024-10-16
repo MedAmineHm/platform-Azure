@@ -1,32 +1,38 @@
+# Use the official Node.js image
 FROM node:20
 
+# Set the working directory
 WORKDIR /app
 
-# Copier les fichiers de dépendances Node.js
+# Copy package.json and package-lock.json
 COPY package*.json ./
+
+# Install dependencies
 RUN npm install
 
-# Installer Azure CLI
-RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+# Install Azure CLI
+RUN apt-get update && \
+    apt-get install -y curl && \
+    curl -sL https://aka.ms/InstallAzureCLIDeb | bash && \
+    apt-get clean
 
-# Installer Infracost
+# Install Infracost
 RUN curl -fsSL https://raw.githubusercontent.com/infracost/infracost/master/scripts/install.sh | sh
 
-# Ajouter Infracost au PATH
+# Add Infracost to the PATH
 ENV PATH="/usr/local/bin:${PATH}"
 
-# Copier le répertoire terraform-codes dans le conteneur
-COPY terraform-codes /terraform-codes
-
-# Copier le reste des fichiers de l'application
+# Copy the rest of the application code
 COPY . .
 
-# Exposer le port sur lequel l'application écoute
+# Build the application
+RUN npm run build
+
+# Expose the port on which the application listens
 EXPOSE 3001
-RUN az login --service-principal -u "c3231912-9f5f-4888-9c01-a3d7ead408a6" -p "Mj58Q~X4o7xlq6DFlBUWUJt~SsL8WngZ1emrvb-T" --tenant "b5ddb5f6-c713-48e9-a93d-d9fa7d6d6ae8"
-# Définir la commande par défaut
-CMD ["npm", "run", "start:prod"]
 
-# Vérification de l'installation d'Infracost
+# Set the command to run your app
+CMD ["node", "dist/main"]
+
+# Check Infracost installation
 RUN infracost --version
-
