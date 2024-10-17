@@ -7,8 +7,8 @@ WORKDIR /app
 # Copier les fichiers de dépendances Node.js
 COPY package*.json ./
 
-# Installer les dépendances
-RUN npm install
+# Installer les dépendances avec legacy-peer-deps
+RUN npm install --legacy-peer-deps
 
 # Copier le reste des fichiers de l'application
 COPY . .
@@ -23,7 +23,7 @@ FROM nginx:alpine
 COPY --from=builder /app/build /usr/share/nginx/html
 
 # Exposer le port sur lequel Nginx écoute
-EXPOSE 80
+EXPOSE 3000
 
 # Démarrer Nginx
 CMD ["nginx", "-g", "daemon off;"]
