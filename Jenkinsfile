@@ -8,13 +8,8 @@ pipeline {
         BACKEND_DIR = 'backend' 
         GIT_REPO_URL = 'https://github.com/MedAmineHm/platform-azure.git'    
         GIT_BRANCH = 'main'
-        TEMPLATES_DIR = 'templates'
 
-        DEPLOYMENT_YAML_PATH = "${TEMPLATES_DIR}/deployment.yaml"
-        SERVICE_YAML_PATH = "${TEMPLATES_DIR}/service.yaml"
-        AZURE_SECRET_YAML_PATH = "${TEMPLATES_DIR}/azure-secrets.yaml"
-        SECRET_YAML_PATH = "${TEMPLATES_DIR}/secret.yaml"
-        MONGODB_PV_YAML_PATH = "${TEMPLATES_DIR}/mongodb-persistent-volume.yaml"  // Add this line
+        
     }
     stages {
         stage('Clone Repository') {
@@ -108,16 +103,6 @@ pipeline {
                 }  
             }
         }
-        stage('Deploying App to Kubernetes') {
-            steps {
-                script {
-                    kubernetesDeploy(configs: "${MONGODB_PV_YAML_PATH}", kubeconfigId: "Kubernetes") // Deploy the PV and PVC first
-                    kubernetesDeploy(configs: "${DEPLOYMENT_YAML_PATH}", kubeconfigId: "Kubernetes")
-                    kubernetesDeploy(configs: "${SERVICE_YAML_PATH}", kubeconfigId: "Kubernetes")
-                    kubernetesDeploy(configs: "${AZURE_SECRET_YAML_PATH}", kubeconfigId: "Kubernetes")
-                    kubernetesDeploy(configs: "${SECRET_YAML_PATH}", kubeconfigId: "Kubernetes")  
-                }
-            }
-        }
+        
     }
 }
