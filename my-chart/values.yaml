@@ -13,8 +13,8 @@ spec:
       values:
         replicaCount: 3
         image:
-          repository: mohamedamine1/backend
-          tag: backend-pfe
+          repository: mohamedamine1/backend-azure
+          tag: back
           pullPolicy: IfNotPresent
         service:
           name: my-nest-app-service
@@ -75,8 +75,8 @@ spec:
       values:
         replicaCount: 1
         image:
-          repository: mohamedamine1/frontend
-          tag: frontend-pfe
+          repository: mohamedamine1/frontend-azure
+          tag: front
           pullPolicy: IfNotPresent
         service:
           type: LoadBalancer
