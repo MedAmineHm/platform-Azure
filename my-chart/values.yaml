@@ -1,46 +1,83 @@
-my-nest-app:
-  replicaCount: 3
-  image:
-    repository: mohamedamine1/backend-azure
-    tag: back
-    pullPolicy: IfNotPresent
-  service:
-    type: LoadBalancer
-    port: 3001
-  env:
-    MONGO_URI: 'mongodb://amine:Hamidou123@mongodb-service:27017/?retryWrites=true&w=majority&appName=Cluster0'
-    REDIS_HOST: redis-service
-    REDIS_PORT: '6379'
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: nestjs-mongodb-redis-reactjs
+spec:
+  releases:
+    # Release pour l'application Nest
+    - name: my-nest-app
+      chart:
+        repository: https://charts.example.com/stable
+        name: my-nest-app
+        version: 1.0.0
+      values:
+        replicaCount: 3
+        image:
+          repository: mohamedamine1/backend
+          tag: backend-pfe
+          pullPolicy: IfNotPresent
+        service:
+          name: my-nest-app-service
+          type: LoadBalancer
+          port: 80
+        env:
+          - name: MONGO_URI
+            value: 'mongodb://amine:Hamidou123@mongodb-service:27017/?retryWrites=true&w=majority&appName=Cluster0'
+          - name: REDIS_HOST
+            value: redis
+          - name: REDIS_PORT
+            value: '6379'
 
-mongodb:
-  replicaCount: 1
-  image:
-    repository: mongo
-    tag: latest
-    pullPolicy: IfNotPresent
-  env:
-    MONGO_INITDB_ROOT_USERNAME: amine
-    MONGO_INITDB_ROOT_PASSWORD: Hamidou123
-  service:
-    type: LoadBalancer
-    port: 27017
+    # Release pour MongoDB
+    - name: mongodb
+      chart:
+        repository: https://charts.example.com/stable
+        name: mongodb
+        version: 1.0.0
+      values:
+        replicaCount: 1
+        image:
+          repository: mongo
+          tag: latest
+          pullPolicy: IfNotPresent
+        env:
+          - name: MONGO_INITDB_ROOT_USERNAME
+            value: amine
+          - name: MONGO_INITDB_ROOT_PASSWORD
+            value: Hamidou123
+        service:
+          type: LoadBalancer
+          port: 27017
 
-redis:
-  replicaCount: 1
-  image:
-    repository: redis
-    tag: latest
-    pullPolicy: IfNotPresent
-  service:
-    type: LoadBalancer
-    port: 6379
+    # Release pour Redis
+    - name: redis
+      chart:
+        repository: https://charts.example.com/stable
+        name: redis
+        version: 1.0.0
+      values:
+        replicaCount: 1
+        image:
+          repository: redis
+          tag: latest
+          pullPolicy: IfNotPresent
+        service:
+          name: redis-service
+          type: LoadBalancer
+          port: 6379
 
-my-react-app:
-  replicaCount: 1
-  image:
-    repository: mohamedamine1/frontend-azure
-    tag: front
-    pullPolicy: IfNotPresent
-  service:
-    type: LoadBalancer
-    port: 3000
+    # Release pour React app
+    - name: my-react-app
+      chart:
+        repository: https://charts.example.com/stable
+        name: my-react-app
+        version: 1.0.0
+      values:
+        replicaCount: 1
+        image:
+          repository: mohamedamine1/frontend
+          tag: frontend-pfe
+          pullPolicy: IfNotPresent
+        service:
+          type: LoadBalancer
+          port: 3000
