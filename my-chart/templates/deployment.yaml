@@ -169,6 +169,7 @@ spec:
     spec:
       containers:
         - name: my-react-app
+<<<<<<< HEAD
           image: mohamedamine1/frontend-azure:front
           ports:
             - containerPort: 3000
@@ -184,3 +185,8 @@ spec:
               port: 3000
             initialDelaySeconds: 15
             periodSeconds: 20
+=======
+          image: mohamedamine1/frontend-azure:front 
+          ports:
+            - containerPort: 3000   
+>>>>>>> 4a528041a9a0eb4e3776cf71571c029f6f669d5e
