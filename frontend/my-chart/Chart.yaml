@@ -1,4 +1,0 @@
-apiVersion: v2
-name: my-react-app
-description: A Helm chart for deploying a React.js application
-version: 0.1.0
