@@ -75,7 +75,7 @@ pipeline {
                     steps {
                         script {
                             dir(BACKEND_DIR) { 
-                                sh "docker build -t mohamedamine1/backend-azure:back ."
+                                sh "docker build -t mohamedamine1/backend:back ."
                             }
                         }  
                     }
@@ -84,7 +84,7 @@ pipeline {
                     steps {
                         script {
                             dir(FRONTEND_DIR) { 
-                                sh "docker build -t mohamedamine1/frontend-azure:front ." 
+                                sh "docker build -t mohamedamine1/frontend:front ." 
                             }
                         }  
                     }

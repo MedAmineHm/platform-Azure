@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: my-nest-app
-          image: mohamedamine1/backend-azure:back
+          image: mohamedamine1/backend:back
           ports:
             - containerPort: 3001
           env:
@@ -169,7 +169,7 @@ spec:
     spec:
       containers:
         - name: my-react-app
-          image: mohamedamine1/frontend-azure:front
+          image: mohamedamine1/frontend:front
           ports:
             - containerPort: 3000
           readinessProbe:

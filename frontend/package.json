@@ -77,14 +77,15 @@
     "react-login-page": "^1.0.2",
     "react-oauth": "^0.0.1",
     "react-router-dom": "^6.11.1",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "react-virtuoso": "^4.6.3",
     "reactflow": "^11.11.1",
     "reactstrap": "8.10.0",
     "sass": "1.62.1",
     "style-loader": "^4.0.0",
     "use-history": "^1.4.1",
-    "web-vitals": "3.3.1"
+    "web-vitals": "3.3.1",
+    "webpack-dev-server": "^5.1.0"
   },
   "optionalDependencies": {
     "jquery": "3.7.0",

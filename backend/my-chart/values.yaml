@@ -13,7 +13,11 @@ spec:
       values:
         replicaCount: 3
         image:
+<<<<<<< HEAD
           repository: mohamedamine1/backend-azure
+=======
+          repository: mohamedamine1/backend
+>>>>>>> 0f5eee4 (ccccc)
           tag: back
           pullPolicy: IfNotPresent
         service:
@@ -75,7 +79,11 @@ spec:
       values:
         replicaCount: 1
         image:
+<<<<<<< HEAD
           repository: mohamedamine1/frontend-azure
+=======
+          repository: mohamedamine1/frontend
+>>>>>>> 0f5eee4 (ccccc)
           tag: front
           pullPolicy: IfNotPresent
         service:
