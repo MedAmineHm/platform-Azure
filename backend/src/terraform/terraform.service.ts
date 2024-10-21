@@ -20,7 +20,7 @@ export class TerraformService {
     }
   }
 
-  // ============= Generate Terraform Code =================
+  // ============= Generate Terraform Code ======
   async generateTerraformCode(data: any) {
     const filePath = path.join(
       process.cwd(),
