@@ -69,7 +69,7 @@ pipeline {
             }
         }*/ 
 
-        stage('Build Docker Images') {
+      stage('Build Docker Images') {
             parallel {
                 stage('Build Docker Image - Backend') {
                     steps {
@@ -92,17 +92,16 @@ pipeline {
             }
         }
 
-        stage('Push Images to Docker Hub') {
+       stage('Push Images to Docker Hub') {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
                         sh 'docker login -u mohamedamine1 -p ${dockerhubpwd}'
-                        sh "docker push mohamedamine1/backend-azure:back"
-                        sh "docker push mohamedamine1/frontend-azure:front" 
+                        sh "docker push mohamedamine1/backend:back"
+                        sh "docker push mohamedamine1/frontend:front" 
                     }
                 }  
             }
         }
-        
     }
 }
