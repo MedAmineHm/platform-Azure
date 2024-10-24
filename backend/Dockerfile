@@ -1,30 +1,32 @@
-# Étape de construction
-FROM node:20-alpine AS builder
+FROM node:20
 
 WORKDIR /app
 
-# Copy package.json and install all dependencies
+# Copier les fichiers de dépendances Node.js
 COPY package*.json ./
-RUN npm install  # Installe toutes les dépendances, y compris devDependencies
+RUN npm install
 
-# Install NestJS CLI globally
-RUN npm install -g @nestjs/cli
+# Installer Azure CLI
+RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
 
-# Build the NestJS application
+# Installer Infracost
+RUN curl -fsSL https://raw.githubusercontent.com/infracost/infracost/master/scripts/install.sh | sh
+
+# Ajouter Infracost au PATH
+ENV PATH="/usr/local/bin:${PATH}"
+
+# Copier le répertoire terraform-codes dans le conteneur
+COPY terraform-codes /terraform-codes
+
+# Copier le reste des fichiers de l'application
 COPY . .
-RUN npm run build
 
-# Étape finale
-FROM node:20-alpine
-
-WORKDIR /app
-
-# Copie uniquement les fichiers nécessaires depuis l'étape de construction
-COPY --from=builder /app/dist ./dist
-COPY package*.json ./
-RUN npm install --production
-
+# Exposer le port sur lequel l'application écoute
 EXPOSE 3001
-
-# Start the application
+RUN az login --service-principal -u "c3231912-9f5f-4888-9c01-a3d7ead408a6" -p "Mj58Q~X4o7xlq6DFlBUWUJt~SsL8WngZ1emrvb-T" --tenant "b5ddb5f6-c713-48e9-a93d-d9fa7d6d6ae8"
+# Définir la commande par défaut
 CMD ["npm", "run", "start:prod"]
+
+# Vérification de l'installation d'Infracost
+RUN infracost --version
+

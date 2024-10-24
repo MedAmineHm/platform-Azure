@@ -15,12 +15,11 @@ export class TerraformService {
       const fileContent = await readFileAsync(filePath, 'utf8');
       return fileContent;
     } catch (err) {
-      // Assertion de type pour indiquer que err est une instance d'Error
-      throw new Error(`Error reading file: ${(err as Error).message}`);
+      throw new Error(`Error reading file: ${err.message}`);
     }
   }
 
-  // ============= Generate Terraform Code ======
+  // ============= Generate Terraform Code =================
   async generateTerraformCode(data: any) {
     const filePath = path.join(
       process.cwd(),
@@ -50,8 +49,10 @@ export class TerraformService {
     try {
       const outputFilePath = `${folderPath}/output.txt`;
 
+      // Read the file synchronously
       const fileOutput = fs.readFileSync(outputFilePath, 'utf-8');
 
+      // delete the generated file
       fse.removeSync(folderPath);
 
       return fileOutput;

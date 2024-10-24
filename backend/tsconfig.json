@@ -11,11 +11,9 @@
     "target": "es2017",
     "sourceMap": true,
     "outDir": "./dist",
-    "rootDir": "./src",
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
-    "strict": true,
     "strictNullChecks": false,
     "noImplicitAny": false,
     "strictBindCallApply": false,
@@ -23,11 +21,13 @@
     "moduleResolution": "node",
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@src/*": ["./src/*"]
+      "src/*": ["./src/*"]
     }
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts", // Include all TypeScript files in src
+    "test/**/*.ts", // Include test directory if tests are there
+    "jest.config.js" // Include Jest configuration
   ],
-  "exclude": ["node_modules", "test", "dist", "jest.config.js"]
+  "exclude": ["node_modules"]
 }
