@@ -5,7 +5,7 @@ metadata:
   labels:
     app: my-nest-app
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: my-nest-app
@@ -158,7 +158,7 @@ metadata:
   labels:
     app: my-react-app
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: my-react-app

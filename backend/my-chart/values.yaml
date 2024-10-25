@@ -11,7 +11,7 @@ spec:
         name: my-nest-app
         version: 1.0.0
       values:
-        replicaCount: 3
+        replicaCount: 1
         image:
           repository: mohamedamine1/backend
           tag: back
