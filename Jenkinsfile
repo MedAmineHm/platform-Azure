@@ -91,16 +91,18 @@ pipeline {
         }
 
         stage('Push Images to Docker Hub') {
-            steps {
-                script {
-                    withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
-                        // Use --password-stdin for Docker login
-                        sh "echo '${dockerhubpwd}' | docker login -u mohamedamine1 --password-stdin"
-                        sh "docker push mohamedamine1/backend:back"
-                        sh "docker push mohamedamine1/frontend:front" 
-                    }
-                }  
+    steps {
+        script {
+            withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
+                // Use a secure method to handle the password
+                sh '''
+                    echo "${dockerhubpwd}" | docker login -u mohamedamine1 --password-stdin
+                '''
+                sh "docker push mohamedamine1/backend:back"
+                sh "docker push mohamedamine1/frontend:front" 
             }
-        }
+        }  
     }
+}
+
 }
