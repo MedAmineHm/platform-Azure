@@ -8,8 +8,6 @@ pipeline {
         BACKEND_DIR = 'backend' 
         GIT_REPO_URL = 'https://github.com/MedAmineHm/platform-azure.git'    
         GIT_BRANCH = 'main'
-
-        
     }
     stages {
         stage('Clone Repository') {
@@ -60,7 +58,7 @@ pipeline {
                             withSonarQubeEnv('sonarqube') {
                                 dir(FRONTEND_DIR) {
                                     sh 'npm install sonar-scanner'
-                                    sh 'npm run sonar -Dsonar.qualityGate.wait=true' /aaaaa
+                                    sh 'npm run sonar -Dsonar.qualityGate.wait=true'
                                 }
                             }     
                         } 
@@ -69,7 +67,7 @@ pipeline {
             }
         }*/ 
 
-      stage('Build Docker Images') {
+        stage('Build Docker Images') {
             parallel {
                 stage('Build Docker Image - Backend') {
                     steps {
@@ -92,11 +90,12 @@ pipeline {
             }
         }
 
-       stage('Push Images to Docker Hub') {
+        stage('Push Images to Docker Hub') {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
-                        sh 'docker login -u mohamedamine1 -p ${dockerhubpwd}'
+                        // Use --password-stdin for Docker login
+                        sh "echo '${dockerhubpwd}' | docker login -u mohamedamine1 --password-stdin"
                         sh "docker push mohamedamine1/backend:back"
                         sh "docker push mohamedamine1/frontend:front" 
                     }
