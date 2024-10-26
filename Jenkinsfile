@@ -90,20 +90,20 @@ pipeline {
             }
         }
 
-        stage('Push Images to Docker Hub') {
+       stage('Push Images to Docker Hub') {
     steps {
         script {
             withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
                 sh '''
                     echo "${dockerhubpwd}" | docker login -u mohamedamine1 --password-stdin
                 '''
-                sh "docker push --max-concurrent-uploads=1 mohamedamine1/backend:back
-"
-                sh "docker push mohamedamine1/frontend:front" 
+                sh 'docker push --max-concurrent-uploads=1 mohamedamine1/backend:back'
+                sh 'docker push mohamedamine1/frontend:front' 
             }
         }  
     }
 }
+
 
     }
 }
