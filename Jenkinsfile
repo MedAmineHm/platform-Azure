@@ -38,6 +38,31 @@ pipeline {
             }
         }
 
+        stage('Compile Code') {
+            parallel {
+                stage('Compile Backend') {
+                    steps {
+                        dir(BACKEND_DIR) {
+                            echo 'Compiling NestJS backend...'
+                            sh 'npm run build' // Assumes there’s a build script in package.json
+                            echo 'Clearing npm cache for backend...'
+                            sh 'npm cache clean --force'
+                        }
+                    }
+                }
+                stage('Compile Frontend') {
+                    steps {
+                        dir(FRONTEND_DIR) {
+                            echo 'Compiling ReactJS frontend...'
+                            sh 'npm run build' // Assumes there’s a build script in package.json
+                            echo 'Clearing npm cache for frontend...'
+                            sh 'npm cache clean --force'
+                        }
+                    }
+                }
+            }
+        }
+
         /*stage('SonarQube Analysis') {
             parallel {
                 stage('SonarQube Analysis - Backend') {
@@ -90,21 +115,18 @@ pipeline {
             }
         }
 
-      stage('Push Images to Docker Hub') {
-    steps {
-        script {
-            withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
-                sh '''
-                    echo "${dockerhubpwd}" | docker login -u mohamedamine1 --password-stdin
-                '''
-                sh 'docker push mohamedamine1/backend:back'
-                sh 'docker push mohamedamine1/frontend:front'
+        stage('Push Images to Docker Hub') {
+            steps {
+                script {
+                    withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
+                        sh '''
+                            echo "${dockerhubpwd}" | docker login -u mohamedamine1 --password-stdin
+                        '''
+                        sh 'docker push mohamedamine1/backend:back'
+                        sh 'docker push mohamedamine1/frontend:front'
+                    }
+                }  
             }
-        }  
-    }
-}
-
-
-
+        }
     }
 }
