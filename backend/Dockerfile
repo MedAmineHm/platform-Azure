@@ -1,13 +1,30 @@
-FROM node:20
+# Étape 1 : Build
+FROM node:20 AS builder
 
 WORKDIR /app
 
-# Copier les fichiers de dépendances Node.js
+# Copier les fichiers de dépendances Node.js et installer les dépendances
 COPY package*.json ./
-RUN npm install
+RUN npm install --production
+
+# Copier le reste des fichiers de l'application
+COPY . .
+
+# Étape 2 : Production
+FROM node:20-slim AS production
+
+WORKDIR /app
+
+# Copier uniquement les fichiers nécessaires depuis l'étape de build
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app .
 
 # Installer Azure CLI
-RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+RUN apt-get update && \
+    apt-get install -y curl && \
+    curl -sL https://aka.ms/InstallAzureCLIDeb | bash && \
+    rm -rf /var/lib/apt/lists/*
 
 # Installer Infracost
 RUN curl -fsSL https://raw.githubusercontent.com/infracost/infracost/master/scripts/install.sh | sh
@@ -16,15 +33,12 @@ RUN curl -fsSL https://raw.githubusercontent.com/infracost/infracost/master/scri
 ENV PATH="/usr/local/bin:${PATH}"
 
 # Copier le répertoire terraform-codes dans le conteneur
-COPY terraform-codes /terraform-codes
-
-# Copier le reste des fichiers de l'application
-COPY . .
+COPY --from=builder /app/terraform-codes /terraform-codes
 
 # Exposer le port sur lequel l'application écoute
 EXPOSE 3001
-RUN az login --service-principal -u "c3231912-9f5f-4888-9c01-a3d7ead408a6" -p "Mj58Q~X4o7xlq6DFlBUWUJt~SsL8WngZ1emrvb-T" --tenant "b5ddb5f6-c713-48e9-a93d-d9fa7d6d6ae8"
-# Définir la commande par défaut
+
+# Commande pour démarrer l'application
 CMD ["npm", "run", "start:prod"]
 
 # Vérification de l'installation d'Infracost
