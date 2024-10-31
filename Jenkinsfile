@@ -89,7 +89,7 @@ pipeline {
                     steps {
                         script {
                             dir(BACKEND_DIR) { 
-                                sh "docker build -t mohamedamine1/backend:back ."
+                                sh "docker build -t mohamedamine1/backend:terrafront ."
                             }
                         }  
                     }
@@ -98,7 +98,7 @@ pipeline {
                     steps {
                         script {
                             dir(FRONTEND_DIR) { 
-                                sh "docker build -t mohamedamine1/frontend:front ." 
+                                sh "docker build -t mohamedamine1/frontend:terraback ." 
                             }
                         }  
                     }

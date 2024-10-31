@@ -14,7 +14,7 @@ spec:
         replicaCount: 1
         image:
           repository: mohamedamine1/backend
-          tag: back
+          tag: terraback
           pullPolicy: IfNotPresent
         service:
           name: my-nest-app-service
@@ -76,7 +76,7 @@ spec:
         replicaCount: 1
         image:
           repository: mohamedamine1/frontend
-          tag: front
+          tag: terrafront
           pullPolicy: IfNotPresent
         service:
           type: LoadBalancer
