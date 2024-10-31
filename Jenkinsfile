@@ -37,6 +37,22 @@ pipeline {
                 }
             }
         }
+   stage('Build frontend') {
+            steps {
+                dir(BACKEND_DIR) {
+                    echo 'Building the reactjs backend to generate the dist directory...'
+                    sh 'npm run build'
+                }
+            }
+        }
+        stage('Build Backend') {
+            steps {
+                dir(BACKEND_DIR) {
+                    echo 'Building the NestJS backend to generate the dist directory...'
+                    sh 'npm run build'
+                }
+            }
+        }
 
         /*stage('SonarQube Analysis') {
             parallel {
@@ -90,21 +106,18 @@ pipeline {
             }
         }
 
-      stage('Push Images to Docker Hub') {
-    steps {
-        script {
-            withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
-                sh '''
-                    echo "${dockerhubpwd}" | docker login -u mohamedamine1 --password-stdin
-                '''
-                sh 'docker push mohamedamine1/backend:back'
-                sh 'docker push mohamedamine1/frontend:front'
+        stage('Push Images to Docker Hub') {
+            steps {
+                script {
+                    withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
+                        sh '''
+                            echo "${dockerhubpwd}" | docker login -u mohamedamine1 --password-stdin
+                        '''
+                        sh 'docker push mohamedamine1/backend:back'
+                        sh 'docker push mohamedamine1/frontend:front'
+                    }
+                }  
             }
-        }  
-    }
-}
-
-
-
+        }
     }
 }
