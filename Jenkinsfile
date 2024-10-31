@@ -113,8 +113,8 @@ pipeline {
                         sh '''
                             echo "${dockerhubpwd}" | docker login -u mohamedamine1 --password-stdin
                         '''
-                        sh 'docker push mohamedamine1/backend:back'
-                        sh 'docker push mohamedamine1/frontend:front'
+                        sh 'docker push mohamedamine1/backend:terraback'
+                        sh 'docker push mohamedamine1/frontend:terrafront'
                     }
                 }  
             }
