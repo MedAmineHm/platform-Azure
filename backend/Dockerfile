@@ -1,21 +1,28 @@
-# Stage 1: Build the app
-FROM node:20-alpine AS builder
+FROM node:20
+
 WORKDIR /app
+
+# Copy package files and install dependencies
 COPY package*.json ./
-RUN npm install
+RUN npm ci && npm rebuild bcrypt --build-from-source
+
+# Install Azure CLI
+RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+
+# Install Infracost
+RUN curl -fsSL https://raw.githubusercontent.com/infracost/infracost/master/scripts/install.sh | sh
+
+# Add Infracost to PATH
+ENV PATH="/usr/local/bin:${PATH}"
+
+# Copy the application files
 COPY . .
-RUN npm run build
 
-# Stage 2: Create a minimal production image
-FROM node:20-alpine
-WORKDIR /app
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/package*.json ./
-# Install all dependencies first, then prune to production-only
-RUN npm install && npm prune --production
-
-# Expose port 3001
+# Expose the application port
 EXPOSE 3001
 
-# Command to run the application
-CMD ["node", "dist/main"]
+# Set the default command to start the application
+CMD ["npm", "run", "start:prod"]
+
+# Verify Infracost installation
+RUN infracost --version
