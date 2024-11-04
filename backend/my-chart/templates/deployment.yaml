@@ -5,7 +5,7 @@ metadata:
   labels:
     app: my-nest-app
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: my-nest-app
@@ -34,18 +34,6 @@ spec:
           volumeMounts:
             - name: terraform-code
               mountPath: /terraform-codes
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 3001
-            initialDelaySeconds: 5
-            periodSeconds: 10
-          livenessProbe:
-            httpGet:
-              path: /
-              port: 3001
-            initialDelaySeconds: 15
-            periodSeconds: 20
         - name: infracost
           image: infracost/infracost:latest
           command: ['sh', '-c', 'sleep infinity']
@@ -85,7 +73,6 @@ spec:
           emptyDir: {}
 
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -121,7 +108,6 @@ spec:
             claimName: mongodb-pvc
 
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -143,14 +129,8 @@ spec:
           image: redis:latest
           ports:
             - containerPort: 6379
-          livenessProbe:
-            tcpSocket:
-              port: 6379
-            initialDelaySeconds: 15
-            periodSeconds: 20
 
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -158,7 +138,7 @@ metadata:
   labels:
     app: my-react-app
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: my-react-app
@@ -172,15 +152,3 @@ spec:
           image: mohamedamine1/frontend:terrafront
           ports:
             - containerPort: 3000
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 3000
-            initialDelaySeconds: 5
-            periodSeconds: 10
-          livenessProbe:
-            httpGet:
-              path: /
-              port: 3000
-            initialDelaySeconds: 15
-            periodSeconds: 20
