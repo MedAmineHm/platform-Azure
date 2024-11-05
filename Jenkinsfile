@@ -89,8 +89,7 @@ pipeline {
                     steps {
                         script {
                             dir(BACKEND_DIR) { 
-                                sh "docker build --no-cache -t mohamedamine1/backend:terraback .
-"
+                                sh "docker build --no-cache -t mohamedamine1/backend:terraback ."
                             }
                         }  
                     }
