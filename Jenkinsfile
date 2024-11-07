@@ -22,8 +22,8 @@ pipeline {
                 stage('Install Backend Dependencies') {
                     steps {
                         dir(BACKEND_DIR) {
-                            echo 'Installing dependencies for the NestJS backend...'
-                            sh 'npm install'
+                            echo 'Installing production dependencies for the NestJS backend...'
+                            sh 'npm install --only=production'
                         }
                     }
                 }
@@ -89,7 +89,7 @@ pipeline {
                     steps {
                         script {
                             dir(BACKEND_DIR) { 
-                                sh "docker build --no-cache -t mohamedamine1/backend:terraback ."
+                                sh "docker build -t mohamedamine1/backend:terraback ."
                             }
                         }  
                     }

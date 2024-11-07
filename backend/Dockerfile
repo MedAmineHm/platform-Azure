@@ -7,8 +7,11 @@ WORKDIR /app
 # Copy package.json and package-lock.json to install dependencies
 COPY package*.json ./
 
-# Install only production dependencies
-RUN npm install --only=production
+# Install production dependencies and Nest CLI globally
+RUN npm install --only=production && npm install -g @nestjs/cli
+
+# Install development dependencies including @types/node
+RUN npm install --only=dev @types/node
 
 # Install Azure CLI
 RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
@@ -30,9 +33,6 @@ RUN npm run build
 
 # Expose the application port
 EXPOSE 3001
-
-# Optional: Remove sensitive information and Azure CLI login for security
-# If login is necessary, use it outside the Dockerfile during runtime or through a secure pipeline process
 
 # Set the default command to start the app in production mode
 CMD ["npm", "run", "start:prod"]
