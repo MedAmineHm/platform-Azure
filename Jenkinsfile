@@ -23,7 +23,7 @@ pipeline {
                     steps {
                         dir(BACKEND_DIR) {
                             echo 'Installing production dependencies for the NestJS backend...'
-                            sh 'npm install --only=production'
+                            sh 'npm install'
                         }
                     }
                 }
