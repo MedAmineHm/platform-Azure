@@ -6,6 +6,7 @@ import * as fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import fse from 'fs-extra';
 import { executeCommand } from 'src/utils';
+import process from 'process';
 
 @Injectable()
 export class TerraformService {
@@ -15,7 +16,11 @@ export class TerraformService {
       const fileContent = await readFileAsync(filePath, 'utf8');
       return fileContent;
     } catch (err) {
-      throw new Error(`Error reading file: ${err.message}`);
+      if (err instanceof Error) {
+        throw new Error(`Error reading file: ${err.message}`);
+      } else {
+        throw new Error('Unknown error occurred while reading file.');
+      }
     }
   }
 
