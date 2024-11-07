@@ -1,32 +1,41 @@
+# Use Node 20 as the base image
 FROM node:20
 
+# Set the working directory
 WORKDIR /app
 
-# Copier les fichiers de dépendances Node.js
+# Copy package.json and package-lock.json to install dependencies
 COPY package*.json ./
-RUN npm install
 
-# Installer Azure CLI
+# Install only production dependencies
+RUN npm install --only=production
+
+# Install Azure CLI
 RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
 
-# Installer Infracost
+# Install Infracost
 RUN curl -fsSL https://raw.githubusercontent.com/infracost/infracost/master/scripts/install.sh | sh
 
-# Ajouter Infracost au PATH
+# Add Infracost to PATH
 ENV PATH="/usr/local/bin:${PATH}"
 
-# Copier le répertoire terraform-codes dans le conteneur
-COPY terraform-codes /terraform-codes
+# Copy the specific directory containing Terraform codes into the container
+COPY terraform-codes /app/terraform-codes
 
-# Copier le reste des fichiers de l'application
+# Copy the rest of the application files into the container
 COPY . .
 
-# Exposer le port sur lequel l'application écoute
+# Build the application
 RUN npm run build
+
+# Expose the application port
 EXPOSE 3001
-RUN az login --service-principal -u "c3231912-9f5f-4888-9c01-a3d7ead408a6" -p "Mj58Q~X4o7xlq6DFlBUWUJt~SsL8WngZ1emrvb-T" --tenant "b5ddb5f6-c713-48e9-a93d-d9fa7d6d6ae8"
-# Définir la commande par défaut
+
+# Optional: Remove sensitive information and Azure CLI login for security
+# If login is necessary, use it outside the Dockerfile during runtime or through a secure pipeline process
+
+# Set the default command to start the app in production mode
 CMD ["npm", "run", "start:prod"]
 
-# Vérification de l'installation d'Infracost
+# Verification of Infracost installation
 RUN infracost --version
