@@ -54,8 +54,8 @@ pipeline {
             }
         }
 
-        
-             
+        stage('SonarQube Analysis') {
+            parallel {
                 stage('SonarQube Analysis - Backend') {
                     steps {
                         script {
@@ -68,9 +68,20 @@ pipeline {
                         } 
                     }
                 }
-                
-            
-        
+                stage('SonarQube Analysis - Frontend') {
+                    steps {
+                        script {
+                            withSonarQubeEnv('sonarqube') {
+                                dir(FRONTEND_DIR) {
+                                    sh 'npm install sonar-scanner'
+                                    sh 'npm run sonar '
+                                }
+                            }     
+                        } 
+                    }
+                }
+            }
+        }
 
         stage('Build Docker Images') {
             parallel {
