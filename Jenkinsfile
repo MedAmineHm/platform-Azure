@@ -89,7 +89,7 @@ pipeline {
                     steps {
                         script {
                             dir(BACKEND_DIR) { 
-                                sh "docker build -t backend:terraback ."
+                                sh "docker build -t backend:backend-pfe ."
                             }
                         }  
                     }
@@ -98,7 +98,7 @@ pipeline {
                     steps {
                         script {
                             dir(FRONTEND_DIR) { 
-                                sh "docker build -t frontend:terrafront ." 
+                                sh "docker build -t frontend:frontend-pfe ." 
                             }
                         }  
                     }
@@ -113,8 +113,8 @@ pipeline {
                         sh '''
                             echo "${dockerhubpwd}" | docker login -u mohamedamine1 --password-stdin
                         '''
-                        sh 'docker push mohamedamine1/backend:terraback'
-                        sh 'docker push mohamedamine1/frontend:terrafront'
+                        sh 'docker push mohamedamine1/backend:backend-pfe'
+                        sh 'docker push mohamedamine1/frontend:frontend-pfe'
                     }
                 }  
             }

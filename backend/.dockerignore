@@ -1,3 +1,9 @@
-node_modules
+# Exclure les fichiers spécifiques
+node_modules/
 npm-debug.log
 Dockerfile
+.dockerignore
+.git
+.gitignore
+.vscode/
+README.md

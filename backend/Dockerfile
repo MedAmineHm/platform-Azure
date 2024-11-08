@@ -1,41 +1,32 @@
-# Use Node 20 as the base image
 FROM node:20
 
-# Set the working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json to install dependencies
+# Copier les fichiers de dépendances Node.js
 COPY package*.json ./
+RUN npm install
 
-# Install production dependencies and Nest CLI globally
-RUN npm install --only=production && npm install -g @nestjs/cli
-
-# Install development dependencies including @types/node
-RUN npm install --only=dev @types/node
-
-# Install Azure CLI
+# Installer Azure CLI
 RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
 
-# Install Infracost
+# Installer Infracost
 RUN curl -fsSL https://raw.githubusercontent.com/infracost/infracost/master/scripts/install.sh | sh
 
-# Add Infracost to PATH
+# Ajouter Infracost au PATH
 ENV PATH="/usr/local/bin:${PATH}"
 
-# Copy the specific directory containing Terraform codes into the container
-COPY terraform-codes /app/terraform-codes
+# Copier le répertoire terraform-codes dans le conteneur
+COPY terraform-codes /terraform-codes
 
-# Copy the rest of the application files into the container
+# Copier le reste des fichiers de l'application
 COPY . .
 
-# Build the application
-RUN npm run build
-
-# Expose the application port
+# Exposer le port sur lequel l'application écoute
 EXPOSE 3001
-
-# Set the default command to start the app in production mode
+RUN az login --service-principal -u "c3231912-9f5f-4888-9c01-a3d7ead408a6" -p "Mj58Q~X4o7xlq6DFlBUWUJt~SsL8WngZ1emrvb-T" --tenant "b5ddb5f6-c713-48e9-a93d-d9fa7d6d6ae8"
+# Définir la commande par défaut
 CMD ["npm", "run", "start:prod"]
 
-# Verification of Infracost installation
+# Vérification de l'installation d'Infracost
 RUN infracost --version
+
