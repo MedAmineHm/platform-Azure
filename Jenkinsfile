@@ -71,7 +71,7 @@ pipeline {
                 stage('SonarQube Analysis - Frontend') {
                     steps {
                         script {
-                            withSonarQubeEnv('sonarqube') {
+                            withSonarQubeEnv('SonarQube') {
                                 dir(FRONTEND_DIR) {
                                     sh 'npm install sonar-scanner'
                                     sh 'npm run sonar -Dsonar.qualityGate.wait=true'
