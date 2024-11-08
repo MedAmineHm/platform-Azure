@@ -37,10 +37,12 @@ pipeline {
                 }
             }
         }
-   stage('Build frontend') {
+  stage('Build') {
+    parallel {
+        stage('Build frontend') {
             steps {
-                dir(BACKEND_DIR) {
-                    echo 'Building the reactjs backend to generate the dist directory...'
+                dir(FRONTEND_DIR) {
+                    echo 'Building the ReactJS frontend to generate the dist directory...'
                     sh 'npm run build'
                 }
             }
@@ -53,31 +55,39 @@ pipeline {
                 }
             }
         }
+    }
+}
 
-                stage('SonarQube Analysis - Backend') {
-                    steps {
-                        script {
-                            withSonarQubeEnv('sonarqube') {
-                                dir(BACKEND_DIR) {
-                                    sh 'npm install sonar-scanner'
-                                    sh 'npm run sonar '
-                                }
-                            }     
-                        } 
+
+                stage('SonarQube Analysis') {
+    parallel {
+        stage('SonarQube Analysis - Backend') {
+            steps {
+                script {
+                    withSonarQubeEnv('sonarqube') {
+                        dir(BACKEND_DIR) {
+                            sh 'npm install sonar-scanner'
+                            sh 'npm run sonar'
+                        }
                     }
                 }
-                stage('SonarQube Analysis - Frontend') {
-                    steps {
-                        script {
-                            withSonarQubeEnv('sonarqubee') {
-                                dir(FRONTEND_DIR) {
-                                    sh 'npm install sonar-scanner'
-                                    sh 'npm run sonar '
-                                }
-                            }     
-                        } 
+            }
+        }
+        stage('SonarQube Analysis - Frontend') {
+            steps {
+                script {
+                    withSonarQubeEnv('sonarqubee') {  
+                        dir(FRONTEND_DIR) {
+                            sh 'npm install sonar-scanner'
+                            sh 'npm run sonar'
+                        }
                     }
                 }
+            }
+        }
+    }
+}
+
             
         
 
