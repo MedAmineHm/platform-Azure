@@ -69,7 +69,7 @@ pipeline {
                 stage('SonarQube Analysis - Frontend') {
                     steps {
                         script {
-                            withSonarQubeEnv('sonarqube') {
+                            withSonarQubeEnv('sonarqubee') {
                                 dir(FRONTEND_DIR) {
                                     sh 'npm install sonar-scanner'
                                     sh 'npm run sonar '
