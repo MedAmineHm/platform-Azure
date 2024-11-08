@@ -14,7 +14,7 @@ spec:
         replicaCount: 1
         image:
           repository: mohamedamine1/backend
-          tag: terraback
+          tag: terraback-modified
           pullPolicy: IfNotPresent
         service:
           name: my-nest-app-service

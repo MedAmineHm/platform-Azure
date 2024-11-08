@@ -26,7 +26,7 @@ services:
     build:
       context: .
       target: production
-    image: backend-azure
+    image: backend:terraback
     container_name: nestjs_app
     restart: always
     ports:
