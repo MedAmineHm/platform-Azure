@@ -54,8 +54,6 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            parallel {
                 stage('SonarQube Analysis - Backend') {
                     steps {
                         script {
@@ -80,8 +78,8 @@ pipeline {
                         } 
                     }
                 }
-            }
-        }
+            
+        
 
         stage('Build Docker Images') {
             parallel {
