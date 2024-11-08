@@ -1,0 +1,1 @@
+ 2tsXhrsrc/azure/pipes/vmSizesPipe.ts
