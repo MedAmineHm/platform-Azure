@@ -89,7 +89,7 @@ pipeline {
                     steps {
                         script {
                             dir(BACKEND_DIR) { 
-                                sh "docker build -t backend:backend-pfe ."
+                                sh "docker build -t mohamedamine1/backend:backend-pfe ."
                             }
                         }  
                     }
@@ -98,7 +98,7 @@ pipeline {
                     steps {
                         script {
                             dir(FRONTEND_DIR) { 
-                                sh "docker build -t frontend:frontend-pfe ." 
+                                sh "docker build -t mohamedamine1/frontend:frontend-pfe ." 
                             }
                         }  
                     }
