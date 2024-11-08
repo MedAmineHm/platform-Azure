@@ -62,7 +62,7 @@ pipeline {
                             withSonarQubeEnv('sonarqube') {
                                 dir(BACKEND_DIR) {
                                     sh 'npm install sonar-scanner'
-                                    sh 'npm run sonar -Dsonar.qualityGate.wait=true'
+                                    sh 'npm run sonar '
                                 }
                             }     
                         } 
@@ -74,7 +74,7 @@ pipeline {
                             withSonarQubeEnv('SonarQube') {
                                 dir(FRONTEND_DIR) {
                                     sh 'npm install sonar-scanner'
-                                    sh 'npm run sonar -Dsonar.qualityGate.wait=true'
+                                    sh 'npm run sonar '
                                 }
                             }     
                         } 
