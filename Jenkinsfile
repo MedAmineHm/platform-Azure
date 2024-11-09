@@ -61,26 +61,27 @@ pipeline {
 }
 
 
-stage('Security Scanning - Dependencies') {
+stage('Linting') {
     parallel {
-        stage('Backend Dependency Scan') {
+        stage('Backend Linting') {
             steps {
                 dir(BACKEND_DIR) {
-                    echo 'Scanning backend dependencies for vulnerabilities...'
-                    sh 'npm audit'
+                    echo 'Linting the backend code...'
+                    sh 'npm run lint'
                 }
             }
         }
-        stage('Frontend Dependency Scan') {
+        stage('Frontend Linting') {
             steps {
                 dir(FRONTEND_DIR) {
-                    echo 'Scanning frontend dependencies for vulnerabilities...'
-                    sh 'npm audit'
+                    echo 'Linting the frontend code...'
+                    sh 'npm run lint'
                 }
             }
         }
     }
 }
+
 
 
 
