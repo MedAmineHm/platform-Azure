@@ -60,6 +60,49 @@ pipeline {
     }
 }
 
+stage('Linting') {
+    parallel {
+        stage('Backend Linting') {
+            steps {
+                dir(BACKEND_DIR) {
+                    echo 'Linting the backend code...'
+                    sh 'npm run lint'
+                }
+            }
+        }
+        stage('Frontend Linting') {
+            steps {
+                dir(FRONTEND_DIR) {
+                    echo 'Linting the frontend code...'
+                    sh 'npm run lint'
+                }
+            }
+        }
+    }
+}
+stage('Security Scanning - Dependencies') {
+    parallel {
+        stage('Backend Dependency Scan') {
+            steps {
+                dir(BACKEND_DIR) {
+                    echo 'Scanning backend dependencies for vulnerabilities...'
+                    sh 'npm audit'
+                }
+            }
+        }
+        stage('Frontend Dependency Scan') {
+            steps {
+                dir(FRONTEND_DIR) {
+                    echo 'Scanning frontend dependencies for vulnerabilities...'
+                    sh 'npm audit'
+                }
+            }
+        }
+    }
+}
+
+
+
 
 
                 stage('SonarQube Analysis') {
