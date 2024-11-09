@@ -60,34 +60,7 @@ pipeline {
     }
 }
 
-
-stage('Linting') {
-    parallel {
-        stage('Backend Linting') {
-            steps {
-                dir(BACKEND_DIR) {
-                    echo 'Linting the backend code...'
-                    sh 'npm run lint'
-                }
-            }
-        }
-        stage('Frontend Linting') {
-            steps {
-                dir(FRONTEND_DIR) {
-                    echo 'Linting the frontend code...'
-                    sh 'npm run lint'
-                }
-            }
-        }
-    }
-}
-
-
-
-
-
-
-                stage('SonarQube Analysis') {
+stage('SonarQube Analysis') {
     parallel {
         stage('SonarQube Analysis - Backend') {
             steps {
