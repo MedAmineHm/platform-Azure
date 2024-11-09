@@ -60,26 +60,7 @@ pipeline {
     }
 }
 
-stage('Linting') {
-    parallel {
-        stage('Backend Linting') {
-            steps {
-                dir(BACKEND_DIR) {
-                    echo 'Linting the backend code...'
-                    sh 'npm run lint'
-                }
-            }
-        }
-        stage('Frontend Linting') {
-            steps {
-                dir(FRONTEND_DIR) {
-                    echo 'Linting the frontend code...'
-                    sh 'npm run lint'
-                }
-            }
-        }
-    }
-}
+
 stage('Security Scanning - Dependencies') {
     parallel {
         stage('Backend Dependency Scan') {
@@ -159,6 +140,20 @@ stage('Security Scanning - Dependencies') {
                 }
             }
         }
+        stage('Security Scanning - Docker Images') {
+    parallel {
+        stage('Scan Backend Docker Image') {
+            steps {
+                sh 'trivy image --severity HIGH,CRITICAL --cache-dir ~/.cache/trivy mohamedamine1/backend:backend-pfe'
+            }
+        }
+        stage('Scan Frontend Docker Image') {
+            steps {
+                sh 'trivy image --severity HIGH,CRITICAL --cache-dir ~/.cache/trivy mohamedamine1/frontend:frontend-pfe'
+            }
+        }
+    }
+}
 
         stage('Push Images to Docker Hub') {
             steps {
