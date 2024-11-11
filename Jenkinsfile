@@ -142,5 +142,28 @@ stage('SonarQube Analysis') {
                 }  
             }
         }
+        stage('ArgoCD Deployment') {
+    steps {
+        script {
+            withCredentials([usernamePassword(credentialsId: 'argocd-credentials', usernameVariable: 'ARGOCD_USERNAME', passwordVariable: 'ARGOCD_PASSWORD')]) {
+                echo 'Logging in to ArgoCD...'
+                
+                // Connexion au serveur ArgoCD
+                sh '''
+                    argocd login 172.26.102.112:8080 --username $ARGOCD_USERNAME --password $ARGOCD_PASSWORD --insecure
+                '''
+                
+                echo 'Syncing application with ArgoCD...'
+                
+                // Synchronisation de l'application
+                sh '''
+                    argocd app sync azureapp
+                    argocd app wait azureapp --timeout 600
+                '''
+            }
+        }
+    }
+}
+
     }
 }
