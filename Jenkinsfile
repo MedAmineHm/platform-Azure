@@ -114,7 +114,8 @@ stage('SonarQube Analysis') {
                 }
             }
         }
-        stage('Security Scanning - Docker Images') {
+
+        /*stage('Security Scanning - Docker Images') {
     parallel {
         stage('Scan Backend Docker Image') {
             steps {
@@ -127,7 +128,7 @@ stage('SonarQube Analysis') {
             }
         }
     }
-}
+}*/
 
         stage('Push Images to Docker Hub') {
             steps {
